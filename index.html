@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>D-18 Listening Test</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+  :root {
+    --bg: #fbfbf9; --card: #ffffff; --ink: #141413; --muted: #6d6d68; --line: #e4e4df; --soft: #f3f3ef;
+    --accent: #b8382b; --accent-ink: #ffffff; --accent-soft: #f7e6e2; --good: #2a7a4b; --warn: #a3650a;
+    --hero-fade: #fbfbf9;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0f0f10; --card: #171718; --ink: #f1f0ec; --muted: #9b9b95; --line: #2a2a2c; --soft: #202022;
+      --accent: #e0604f; --accent-ink: #130c0b; --accent-soft: #3b1f1b; --good: #74c494; --warn: #e0b457;
+      --hero-fade: #0f0f10;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0f0f10; --card: #171718; --ink: #f1f0ec; --muted: #9b9b95; --line: #2a2a2c; --soft: #202022;
+    --accent: #e0604f; --accent-ink: #130c0b; --accent-soft: #3b1f1b; --good: #74c494; --warn: #e0b457;
+    --hero-fade: #0f0f10;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.55 Inter, -apple-system, "SF Pro Text", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  main { max-width: 880px; margin: 0 auto; padding: 0 20px 80px; }
+  h1 { font-family: Fraunces, "Iowan Old Style", Georgia, serif; font-weight: 500; font-size: clamp(38px, 6vw, 60px); line-height: 1.02; margin: 0; letter-spacing: -0.025em; }
+  h2 { font-size: 11px; margin: 0 0 14px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+  a { color: var(--accent); text-decoration: none; } a:hover { text-decoration: underline; }
+  .eyebrow { font-size: 11px; letter-spacing: .18em; text-transform: uppercase; font-weight: 600; color: var(--accent); }
+
+  /* hero: monochrome, grain, dissolves into the page */
+  .hero { position: relative; margin: 0 -20px 0; height: 380px; overflow: hidden; background: #111; }
+  .hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 60%; filter: grayscale(1) contrast(1.2) brightness(.82); }
+  .hero .grain { position: absolute; inset: 0; opacity: .22; mix-blend-mode: overlay; pointer-events: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 1 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+  .hero .fade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(17,17,17,.15) 0%, rgba(17,17,17,.05) 40%, var(--hero-fade) 100%); }
+  .hero .tint { position: absolute; inset: 0; background: var(--accent); mix-blend-mode: soft-light; opacity: .35; }
+  .masthead { position: relative; margin-top: -140px; padding: 0 0 14px; }
+  .masthead p.lede { font-size: 18px; line-height: 1.45; max-width: 620px; margin: 14px 0 0; color: var(--ink); }
+  .story { display: grid; grid-template-columns: 1.4fr 1fr; gap: 40px; padding: 22px 0 8px; }
+  .story p { margin: 0 0 12px; font-size: 15.5px; line-height: 1.6; }
+  .story p:last-child { margin-bottom: 0; }
+  .story .sig { font-family: Fraunces, Georgia, serif; font-style: italic; font-size: 17px; color: var(--muted); }
+  details.more { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin: 4px 0 18px; }
+  details.more summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 14px; padding: 13px 0; }
+  details.more summary::-webkit-details-marker { display: none; }
+  details.more .chev { margin-left: auto; font-size: 22px; line-height: 1; color: var(--muted); transition: transform .15s; }
+  details.more[open] .chev { transform: rotate(90deg); }
+  details.more summary:hover .chev { color: var(--ink); }
+  .steps { display: grid; gap: 16px; }
+  .steps > div { display: grid; grid-template-columns: 30px 1fr; column-gap: 12px; font-size: 14px; }
+  .steps .n { grid-row: 1 / span 2; font-family: Fraunces, Georgia, serif; font-size: 26px; line-height: 1; color: var(--accent); }
+  .steps b { font-size: 14px; font-weight: 600; } .steps span:not(.n) { color: var(--muted); font-size: 13.5px; }
+
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 22px; margin-bottom: 14px; }
+  .row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 13px 0; border-bottom: 1px solid var(--line); }
+  .row:last-child { border-bottom: 0; }
+  .row .k { font-weight: 600; font-size: 14px; }
+  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--card); }
+  .seg button { background: transparent; color: var(--ink); border: 0; padding: 7px 13px; cursor: pointer; font: inherit; font-size: 13.5px; font-weight: 500; }
+  .seg button + button { border-left: 1px solid var(--line); }
+  .seg button.on { background: var(--ink); color: var(--bg); }
+  .btn { background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 8px; padding: 11px 18px; font: inherit; font-weight: 600; cursor: pointer; }
+  .btn.ghost { background: var(--soft); color: var(--ink); }
+  .btn.big { font-size: 16px; padding: 15px 22px; width: 100%; margin-top: 6px; }
+  .btn.small { padding: 7px 12px; font-size: 13px; }
+  .btn:disabled { opacity: .4; cursor: default; }
+  .muted { color: var(--muted); } .small { font-size: 13px; } .tiny { font-size: 12px; }
+  .secgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; margin: 2px 0 4px; }
+  .sec { text-align: left; border: 1px solid var(--line); background: var(--card); border-radius: 8px; padding: 10px 12px; cursor: pointer; color: var(--ink); font: inherit; transition: border-color .12s; }
+  .sec:hover { border-color: var(--ink); }
+  .sec b { display: block; font-size: 14px; } .sec span { display: block; font-size: 12px; color: var(--muted); }
+  .sec.on { border-color: var(--ink); background: var(--ink); color: var(--bg); } .sec.on span { color: var(--bg); opacity: .7; }
+  .links { display: flex; gap: 14px; margin: 8px 0 8px; font-size: 13px; }
+  .note { display: flex; gap: 12px; align-items: center; border: 1px dashed var(--line); border-radius: 8px; padding: 12px 14px; margin: 16px 0; font-size: 14px; }
+  .note svg { flex: none; width: 24px; height: 24px; }
+  .progress { height: 4px; background: var(--soft); border-radius: 2px; overflow: hidden; margin: 12px 0; }
+  .progress i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .1s linear; }
+  .play { display: inline-flex; align-items: center; justify-content: center; width: 76px; height: 76px; border-radius: 50%; background: var(--ink); color: var(--bg); border: 0; font-size: 26px; cursor: pointer; }
+  .play.small { width: 60px; height: 60px; font-size: 22px; }
+  .center { text-align: center; }
+  .label { font-family: Fraunces, Georgia, serif; font-weight: 500; font-size: 28px; margin: 6px 0 12px; letter-spacing: -0.01em; }
+  .stars { display: flex; gap: 8px; justify-content: center; margin-top: 18px; }
+  .stars button { width: 56px; height: 56px; border-radius: 8px; border: 1px solid var(--line); background: var(--card); color: var(--ink); font-size: 19px; font-weight: 600; cursor: pointer; }
+  .stars button:hover, .mini button:hover { border-color: var(--ink); }
+  .stars button.on, .mini button.on { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .strip { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-top: 16px; }
+  .chip { padding: 5px 11px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); color: var(--ink); cursor: pointer; font: inherit; font-size: 12.5px; }
+  .chip.on { border-color: var(--ink); background: var(--ink); color: var(--bg); }
+  .chip.unrated { opacity: .5; } .chip.done { border-color: var(--good); }
+  .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+  .mini { display: inline-flex; gap: 3px; }
+  .mini button { width: 30px; height: 30px; border-radius: 6px; border: 1px solid var(--line); background: var(--card); color: var(--ink); font-size: 13px; cursor: pointer; }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .pair .card { margin: 0; }
+  .choices { display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px; margin-top: 14px; }
+  .scroll { overflow-x: auto; margin: 0 -8px; padding: 0 8px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { text-align: left; padding: 10px 7px; border-bottom: 1px solid var(--line); vertical-align: middle; white-space: nowrap; }
+  th { font-size: 11px; color: var(--muted); font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  td.score button, .cellbtn { background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 4px 9px; cursor: pointer; font: inherit; font-size: 13px; color: var(--ink); }
+  .thumb { width: 34px; height: 44px; object-fit: cover; border-radius: 4px; vertical-align: middle; margin-right: 8px; background: var(--soft); filter: grayscale(1); }
+  .pill { display: inline-block; padding: 1px 7px; border-radius: 4px; background: var(--soft); font-size: 11px; color: var(--muted); letter-spacing: .04em; }
+  .bar { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .bar .right { display: flex; gap: 6px; }
+  .hidden { display: none !important; }
+  .warn { color: var(--warn); } .good { color: var(--good); }
+  .credits { display: grid; grid-template-columns: 220px 1fr; gap: 24px; align-items: start; padding: 26px 0 0; border-top: 1px solid var(--line); margin-top: 10px; }
+  .credits img { width: 100%; border-radius: 6px; filter: grayscale(1) contrast(1.1); opacity: .9; }
+  .credits p { margin: 0 0 10px; font-size: 14px; }
+  .credits .thanks { font-family: Fraunces, Georgia, serif; font-style: italic; font-size: 17px; line-height: 1.45; color: var(--ink); margin-bottom: 14px; }
+  kbd { font: 11px ui-monospace, Menlo, monospace; background: var(--soft); padding: 1px 6px; border-radius: 4px; border: 1px solid var(--line); }
+  @media (max-width: 640px) { .hero { height: 300px; } .masthead { margin-top: -110px; } .story { grid-template-columns: 1fr; gap: 22px; } .credits { grid-template-columns: 1fr; } .pair { grid-template-columns: 1fr; } .stars button { width: 48px; height: 48px; } }
+</style>
+</head>
+<body>
+<main>
+  <header class="hero">
+    <img src="assets/collection.jpg" alt="" onerror="this.remove()">
+    <div class="tint"></div><div class="grain"></div><div class="fade"></div>
+  </header>
+  <div class="masthead">
+    <div class="eyebrow">USA Luthier Collection</div>
+    <h1>The D-18 Listening Test</h1>
+    <p class="lede">Eighteen sunburst dreadnoughts built to one spec. Listen blind, rank them, and find out which instrument your ears prefer.</p>
+  </div>
+
+  <!-- SETUP -->
+  <section id="setup">
+    <details class="more">
+      <summary><span class="eyebrow">Learn more</span><span class="muted small">Dale's idea, and how this test works</span><span class="chev">›</span></summary>
+    <div class="story">
+      <div>
+        <p>Dale Owen had a brilliant idea: commission nearly twenty American luthiers to build the same guitar. A D-18 with an Adirondack spruce top, mahogany back and sides, the same pre-war bracing pattern, and a shade top. For the esteemed builders it was a piece of Americana; for the young ones, a way to reach new players. For years Dale toured with the collection, and he recently decided to pass it on to the next generation.</p>
+        <p>In that spirit, this page lets you hear them and decide what sounds good to <em>you</em>. It's a blind taste test: the Pepsi challenge of pre-war style, one-man boutique shops.</p>
+        <p class="sig">Enjoy.</p>
+      </div>
+      <div>
+        <h2>How it works</h2>
+        <div class="steps">
+          <div><span class="n">1</span><b>Listen</b><span>Short clips of the same passage on each guitar, in random order, names hidden.</span></div>
+          <div><span class="n">2</span><b>Rank</b><span>Score each clip 1 to 5, or pick the winner of head-to-head pairs.</span></div>
+          <div><span class="n">3</span><b>Reveal</b><span>Your scorecard names the guitars and shows which one your ears chose.</span></div>
+        </div>
+      </div>
+    </div>
+    </details>
+    <div class="card">
+      <div class="bar" style="align-items:baseline"><h2>What to listen to</h2><span class="small muted">We recommend three sections. Any number works.</span></div>
+      <div class="secgrid" id="secgrid"></div>
+      <div class="links"><a href="#" id="sec-all">Select all</a><a href="#" id="sec-none">Clear</a><span class="muted" id="secnote"></span></div>
+      <div class="row"><span class="k">Clip length</span>
+        <span class="seg" id="len"><button data-v="10">10 s</button><button data-v="20" class="on">20 s</button><button data-v="0">Full</button></span></div>
+      <div class="row"><span class="k">Mode</span>
+        <span class="seg" id="mode"><button data-v="rate" class="on">Rate 1 to 5</button><button data-v="tourney">Head to head</button><button data-v="sort">Quick sort</button></span></div>
+      <div class="row"><span class="k">Blind until the scorecard</span>
+        <span class="seg" id="blind"><button data-v="1" class="on">On</button><button data-v="0">Off</button></span></div>
+      <p class="small muted" id="modehelp"></p>
+      <div class="note">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="13" width="4" height="7" rx="1.5"/><rect x="17" y="13" width="4" height="7" rx="1.5"/></svg>
+        <span><b>Use headphones.</b> Laptop and phone speakers drop the low end and the overtones that set these guitars apart. Keep the volume the same for every clip.</span>
+      </div>
+      <button class="btn big" id="start">Start listening</button>
+    </div>
+    <div class="card" id="history"><div class="bar"><h2 style="margin:0">Past sessions</h2><button class="btn ghost small" id="clear">Clear all</button></div><div id="histlist" class="small muted">None yet.</div></div>
+    <div class="credits">
+      <img src="assets/dales-card.jpg" alt="Dale's Showstoppers Guitars" onerror="this.remove()">
+      <div>
+        <p class="thanks">With gratitude to Dale Owen, for dreaming up the collection and opening his door to anyone who wants to play it, and to Shawn Brock, for playing every one of these guitars the same way, in the same room, so we could listen fairly.</p>
+        <p><b>The guitars</b> belong to the USA Luthier Collection, assembled by Dale Owen of Dale's Showstoppers Guitars in Brevard, North Carolina.</p>
+        <p><b>The playing and recordings</b> are by Shawn Brock. Watch the full episodes on <a href="https://www.youtube.com/playlist?list=PLPQwXCPv_2UiukDtGU8OEfFHP1oz8wuNX" target="_blank" rel="noopener">his YouTube channel</a>.</p>
+        <p class="tiny muted">Clips are short excerpts used for personal listening comparison.</p>
+      </div>
+    </div>
+    <p class="tiny muted">Keys: <kbd>space</kbd> play/pause · <kbd>1</kbd>–<kbd>5</kbd> rate · <kbd>←</kbd>/<kbd>→</kbd> pick A/B · <kbd>a</kbd>/<kbd>b</kbd> play A/B · <kbd>r</kbd> replay · <kbd>z</kbd> undo · <kbd>[</kbd>/<kbd>]</kbd> previous/next guitar</p>
+  </section>
+
+  <!-- RATE -->
+  <section id="rate" class="hidden">
+    <div class="card">
+      <div class="tabs" id="rate-tabs"></div>
+      <div class="bar"><span class="muted" id="rate-prog"></span>
+        <span class="right"><button class="btn ghost small" id="rate-back">← Back</button><button class="btn ghost small" id="rate-quit">Quit</button></span></div>
+      <div class="center">
+        <div class="tiny muted" id="rate-tests"></div>
+        <div class="label" id="rate-label"></div>
+        <img id="rate-img" class="hidden" style="height:120px;border-radius:10px;margin-bottom:10px" alt="">
+        <div><button class="play" id="rate-play">▶</button></div>
+        <div class="progress"><i id="rate-bar"></i></div>
+        <div class="stars" id="rate-stars"></div>
+        <p class="small muted">1 = don't like it · 5 = love it</p>
+        <div class="strip" id="rate-strip"></div>
+        <p class="tiny muted">Click any guitar above to hear it again and change its score. Scores stay editable on the scorecard.</p>
+        <div style="display:flex; gap:10px; justify-content:center; margin-top:12px; flex-wrap:wrap">
+          <button class="btn ghost small hidden" id="rate-resume">Resume at next unrated</button>
+          <button class="btn small hidden" id="rate-next">Next section →</button>
+          <button class="btn small hidden" id="rate-finish">Finish and see scorecard</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PAIR (shared by tournament and quick sort) -->
+  <section id="pair" class="hidden">
+    <div class="card" style="padding:14px 20px">
+      <div class="bar" style="margin:0"><span><b id="pair-sec"></b> <span class="muted small" id="pair-tests"></span></span>
+        <span class="right"><button class="btn ghost small" id="pair-undo">↶ Undo</button><button class="btn ghost small" id="pair-quit">Quit</button></span></div>
+      <div class="small muted" id="pair-prog"></div>
+    </div>
+    <div class="pair">
+      <div class="card center"><div class="label" id="pa-label">A</div><button class="play small" id="pa-play">▶</button><div class="progress"><i id="pa-bar"></i></div></div>
+      <div class="card center"><div class="label" id="pb-label">B</div><button class="play small" id="pb-play">▶</button><div class="progress"><i id="pb-bar"></i></div></div>
+    </div>
+    <div class="choices">
+      <button class="btn" id="pick-a">A is better</button>
+      <button class="btn ghost" id="pick-tie">Too close</button>
+      <button class="btn" id="pick-b">B is better</button>
+    </div>
+  </section>
+
+  <!-- ROUND SUMMARY (tournament) -->
+  <section id="round" class="hidden">
+    <div class="card">
+      <h2 id="round-title"></h2>
+      <p id="round-text"></p>
+      <div id="round-table"></div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:14px">
+        <button class="btn" id="round-next">Next round →</button>
+        <button class="btn ghost" id="round-finish">Finish and see scorecard</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULTS -->
+  <section id="results" class="hidden">
+    <div class="card">
+      <div class="bar"><h2 style="margin:0" id="res-title"></h2><span class="small muted" id="res-sub"></span></div>
+      <div class="scroll"><table id="res-table"></table></div>
+      <p class="small muted" id="res-hint"></p>
+      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:14px">
+        <button class="btn ghost" id="res-export">Export CSV</button>
+        <button class="btn" id="res-home">New session</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+const CLIPS = [{"ep": "01", "guitar": "Judge Wolfe", "section": "intro", "clip": "clips/1 intro/01 Judge Wolfe.m4a", "conf": "high", "dur": 32.0}, {"ep": "01", "guitar": "Judge Wolfe", "section": "bass", "clip": "clips/2 bass/01 Judge Wolfe.m4a", "conf": "confirmed", "dur": 18.0}, {"ep": "01", "guitar": "Judge Wolfe", "section": "ballad", "clip": "clips/3 ballad/01 Judge Wolfe.m4a", "conf": "confirmed", "dur": 59.0}, {"ep": "01", "guitar": "Judge Wolfe", "section": "keyA", "clip": "clips/4 key of A/01 Judge Wolfe.m4a", "conf": "confirmed", "dur": 22.0}, {"ep": "01", "guitar": "Judge Wolfe", "section": "wildflower", "clip": "clips/5 wildflower/01 Judge Wolfe.m4a", "conf": "confirmed", "dur": 34.0}, {"ep": "01", "guitar": "Judge Wolfe", "section": "bflat", "clip": "clips/6 B-flat/01 Judge Wolfe.m4a", "conf": "high", "dur": 20.0}, {"ep": "01", "guitar": "Judge Wolfe", "section": "keyB", "clip": "clips/7 key of B/01 Judge Wolfe.m4a", "conf": "confirmed", "dur": 20.0}, {"ep": "01", "guitar": "Judge Wolfe", "section": "fifth", "clip": "clips/8 fifth fret/01 Judge Wolfe.m4a", "conf": "confirmed", "dur": 10.0}, {"ep": "02", "guitar": "Ken Hooper", "section": "intro", "clip": "clips/1 intro/02 Ken Hooper.m4a", "conf": "high", "dur": 32.0}, {"ep": "02", "guitar": "Ken Hooper", "section": "bass", "clip": "clips/2 bass/02 Ken Hooper.m4a", "conf": "high", "dur": 18.0}, {"ep": "02", "guitar": "Ken Hooper", "section": "ballad", "clip": "clips/3 ballad/02 Ken Hooper.m4a", "conf": "high", "dur": 59.0}, {"ep": "02", "guitar": "Ken Hooper", "section": "keyA", "clip": "clips/4 key of A/02 Ken Hooper.m4a", "conf": "high", "dur": 22.0}, {"ep": "02", "guitar": "Ken Hooper", "section": "wildflower", "clip": "clips/5 wildflower/02 Ken Hooper.m4a", "conf": "high", "dur": 34.0}, {"ep": "02", "guitar": "Ken Hooper", "section": "bflat", "clip": "clips/6 B-flat/02 Ken Hooper.m4a", "conf": "high", "dur": 20.0}, {"ep": "02", "guitar": "Ken Hooper", "section": "keyB", "clip": "clips/7 key of B/02 Ken Hooper.m4a", "conf": "high", "dur": 20.0}, {"ep": "02", "guitar": "Ken Hooper", "section": "fifth", "clip": "clips/8 fifth fret/02 Ken Hooper.m4a", "conf": "medium", "dur": 10.0}, {"ep": "03", "guitar": "Will Byrd", "section": "intro", "clip": "clips/1 intro/03 Will Byrd.m4a", "conf": "high", "dur": 32.0}, {"ep": "03", "guitar": "Will Byrd", "section": "bass", "clip": "clips/2 bass/03 Will Byrd.m4a", "conf": "high", "dur": 18.0}, {"ep": "03", "guitar": "Will Byrd", "section": "ballad", "clip": "clips/3 ballad/03 Will Byrd.m4a", "conf": "high", "dur": 59.0}, {"ep": "03", "guitar": "Will Byrd", "section": "keyA", "clip": "clips/4 key of A/03 Will Byrd.m4a", "conf": "high", "dur": 22.0}, {"ep": "03", "guitar": "Will Byrd", "section": "wildflower", "clip": "clips/5 wildflower/03 Will Byrd.m4a", "conf": "high", "dur": 34.0}, {"ep": "03", "guitar": "Will Byrd", "section": "bflat", "clip": "clips/6 B-flat/03 Will Byrd.m4a", "conf": "high", "dur": 20.0}, {"ep": "03", "guitar": "Will Byrd", "section": "keyB", "clip": "clips/7 key of B/03 Will Byrd.m4a", "conf": "high", "dur": 20.0}, {"ep": "03", "guitar": "Will Byrd", "section": "fifth", "clip": "clips/8 fifth fret/03 Will Byrd.m4a", "conf": "high", "dur": 10.0}, {"ep": "04", "guitar": "Rufus Thames", "section": "intro", "clip": "clips/1 intro/04 Rufus Thames.m4a", "conf": "high", "dur": 32.0}, {"ep": "04", "guitar": "Rufus Thames", "section": "bass", "clip": "clips/2 bass/04 Rufus Thames.m4a", "conf": "high", "dur": 18.0}, {"ep": "04", "guitar": "Rufus Thames", "section": "ballad", "clip": "clips/3 ballad/04 Rufus Thames.m4a", "conf": "high", "dur": 59.0}, {"ep": "04", "guitar": "Rufus Thames", "section": "keyA", "clip": "clips/4 key of A/04 Rufus Thames.m4a", "conf": "high", "dur": 22.0}, {"ep": "04", "guitar": "Rufus Thames", "section": "wildflower", "clip": "clips/5 wildflower/04 Rufus Thames.m4a", "conf": "high", "dur": 34.0}, {"ep": "04", "guitar": "Rufus Thames", "section": "bflat", "clip": "clips/6 B-flat/04 Rufus Thames.m4a", "conf": "high", "dur": 20.0}, {"ep": "04", "guitar": "Rufus Thames", "section": "keyB", "clip": "clips/7 key of B/04 Rufus Thames.m4a", "conf": "check", "dur": 20.0}, {"ep": "04", "guitar": "Rufus Thames", "section": "fifth", "clip": "clips/8 fifth fret/04 Rufus Thames.m4a", "conf": "high", "dur": 10.0}, {"ep": "05", "guitar": "Jimmy Edmonds", "section": "intro", "clip": "clips/1 intro/05 Jimmy Edmonds.m4a", "conf": "high", "dur": 32.0}, {"ep": "05", "guitar": "Jimmy Edmonds", "section": "bass", "clip": "clips/2 bass/05 Jimmy Edmonds.m4a", "conf": "high", "dur": 18.0}, {"ep": "05", "guitar": "Jimmy Edmonds", "section": "ballad", "clip": "clips/3 ballad/05 Jimmy Edmonds.m4a", "conf": "high", "dur": 59.0}, {"ep": "05", "guitar": "Jimmy Edmonds", "section": "keyA", "clip": "clips/4 key of A/05 Jimmy Edmonds.m4a", "conf": "high", "dur": 22.0}, {"ep": "05", "guitar": "Jimmy Edmonds", "section": "wildflower", "clip": "clips/5 wildflower/05 Jimmy Edmonds.m4a", "conf": "high", "dur": 34.0}, {"ep": "05", "guitar": "Jimmy Edmonds", "section": "bflat", "clip": "clips/6 B-flat/05 Jimmy Edmonds.m4a", "conf": "high", "dur": 20.0}, {"ep": "05", "guitar": "Jimmy Edmonds", "section": "keyB", "clip": "clips/7 key of B/05 Jimmy Edmonds.m4a", "conf": "high", "dur": 20.0}, {"ep": "05", "guitar": "Jimmy Edmonds", "section": "fifth", "clip": "clips/8 fifth fret/05 Jimmy Edmonds.m4a", "conf": "high", "dur": 10.0}, {"ep": "06", "guitar": "Jim Merrill", "section": "intro", "clip": "clips/1 intro/06 Jim Merrill.m4a", "conf": "high", "dur": 32.0}, {"ep": "06", "guitar": "Jim Merrill", "section": "bass", "clip": "clips/2 bass/06 Jim Merrill.m4a", "conf": "high", "dur": 18.0}, {"ep": "06", "guitar": "Jim Merrill", "section": "ballad", "clip": "clips/3 ballad/06 Jim Merrill.m4a", "conf": "high", "dur": 59.0}, {"ep": "06", "guitar": "Jim Merrill", "section": "keyA", "clip": "clips/4 key of A/06 Jim Merrill.m4a", "conf": "high", "dur": 22.0}, {"ep": "06", "guitar": "Jim Merrill", "section": "wildflower", "clip": "clips/5 wildflower/06 Jim Merrill.m4a", "conf": "high", "dur": 34.0}, {"ep": "06", "guitar": "Jim Merrill", "section": "bflat", "clip": "clips/6 B-flat/06 Jim Merrill.m4a", "conf": "high", "dur": 20.0}, {"ep": "06", "guitar": "Jim Merrill", "section": "keyB", "clip": "clips/7 key of B/06 Jim Merrill.m4a", "conf": "high", "dur": 20.0}, {"ep": "06", "guitar": "Jim Merrill", "section": "fifth", "clip": "clips/8 fifth fret/06 Jim Merrill.m4a", "conf": "high", "dur": 10.0}, {"ep": "07", "guitar": "Lynn Dudenbostel", "section": "intro", "clip": "clips/1 intro/07 Lynn Dudenbostel.m4a", "conf": "high", "dur": 32.0}, {"ep": "07", "guitar": "Lynn Dudenbostel", "section": "bass", "clip": "clips/2 bass/07 Lynn Dudenbostel.m4a", "conf": "high", "dur": 18.0}, {"ep": "07", "guitar": "Lynn Dudenbostel", "section": "ballad", "clip": "clips/3 ballad/07 Lynn Dudenbostel.m4a", "conf": "high", "dur": 59.0}, {"ep": "07", "guitar": "Lynn Dudenbostel", "section": "keyA", "clip": "clips/4 key of A/07 Lynn Dudenbostel.m4a", "conf": "high", "dur": 22.0}, {"ep": "07", "guitar": "Lynn Dudenbostel", "section": "wildflower", "clip": "clips/5 wildflower/07 Lynn Dudenbostel.m4a", "conf": "high", "dur": 34.0}, {"ep": "07", "guitar": "Lynn Dudenbostel", "section": "bflat", "clip": "clips/6 B-flat/07 Lynn Dudenbostel.m4a", "conf": "high", "dur": 20.0}, {"ep": "07", "guitar": "Lynn Dudenbostel", "section": "keyB", "clip": "clips/7 key of B/07 Lynn Dudenbostel.m4a", "conf": "check", "dur": 20.0}, {"ep": "07", "guitar": "Lynn Dudenbostel", "section": "fifth", "clip": "clips/8 fifth fret/07 Lynn Dudenbostel.m4a", "conf": "high", "dur": 10.0}, {"ep": "08", "guitar": "Nathan Wright", "section": "intro", "clip": "clips/1 intro/08 Nathan Wright.m4a", "conf": "high", "dur": 32.0}, {"ep": "08", "guitar": "Nathan Wright", "section": "bass", "clip": "clips/2 bass/08 Nathan Wright.m4a", "conf": "high", "dur": 18.0}, {"ep": "08", "guitar": "Nathan Wright", "section": "ballad", "clip": "clips/3 ballad/08 Nathan Wright.m4a", "conf": "high", "dur": 59.0}, {"ep": "08", "guitar": "Nathan Wright", "section": "keyA", "clip": "clips/4 key of A/08 Nathan Wright.m4a", "conf": "high", "dur": 22.0}, {"ep": "08", "guitar": "Nathan Wright", "section": "wildflower", "clip": "clips/5 wildflower/08 Nathan Wright.m4a", "conf": "high", "dur": 34.0}, {"ep": "08", "guitar": "Nathan Wright", "section": "bflat", "clip": "clips/6 B-flat/08 Nathan Wright.m4a", "conf": "high", "dur": 20.0}, {"ep": "08", "guitar": "Nathan Wright", "section": "keyB", "clip": "clips/7 key of B/08 Nathan Wright.m4a", "conf": "high", "dur": 20.0}, {"ep": "08", "guitar": "Nathan Wright", "section": "fifth", "clip": "clips/8 fifth fret/08 Nathan Wright.m4a", "conf": "high", "dur": 10.0}, {"ep": "09", "guitar": "John Arnold (The Tree)", "section": "intro", "clip": "clips/1 intro/09 John Arnold (The Tree).m4a", "conf": "high", "dur": 32.0}, {"ep": "09", "guitar": "John Arnold (The Tree)", "section": "bass", "clip": "clips/2 bass/09 John Arnold (The Tree).m4a", "conf": "high", "dur": 18.0}, {"ep": "09", "guitar": "John Arnold (The Tree)", "section": "ballad", "clip": "clips/3 ballad/09 John Arnold (The Tree).m4a", "conf": "high", "dur": 59.0}, {"ep": "09", "guitar": "John Arnold (The Tree)", "section": "keyA", "clip": "clips/4 key of A/09 John Arnold (The Tree).m4a", "conf": "high", "dur": 22.0}, {"ep": "09", "guitar": "John Arnold (The Tree)", "section": "wildflower", "clip": "clips/5 wildflower/09 John Arnold (The Tree).m4a", "conf": "high", "dur": 34.0}, {"ep": "09", "guitar": "John Arnold (The Tree)", "section": "bflat", "clip": "clips/6 B-flat/09 John Arnold (The Tree).m4a", "conf": "high", "dur": 20.0}, {"ep": "09", "guitar": "John Arnold (The Tree)", "section": "keyB", "clip": "clips/7 key of B/09 John Arnold (The Tree).m4a", "conf": "medium", "dur": 20.0}, {"ep": "09", "guitar": "John Arnold (The Tree)", "section": "fifth", "clip": "clips/8 fifth fret/09 John Arnold (The Tree).m4a", "conf": "high", "dur": 10.0}, {"ep": "10", "guitar": "Joshua Young (The Tree)", "section": "intro", "clip": "clips/1 intro/10 Joshua Young (The Tree).m4a", "conf": "high", "dur": 32.0}, {"ep": "10", "guitar": "Joshua Young (The Tree)", "section": "bass", "clip": "clips/2 bass/10 Joshua Young (The Tree).m4a", "conf": "high", "dur": 18.0}, {"ep": "10", "guitar": "Joshua Young (The Tree)", "section": "ballad", "clip": "clips/3 ballad/10 Joshua Young (The Tree).m4a", "conf": "high", "dur": 59.0}, {"ep": "10", "guitar": "Joshua Young (The Tree)", "section": "keyA", "clip": "clips/4 key of A/10 Joshua Young (The Tree).m4a", "conf": "high", "dur": 22.0}, {"ep": "10", "guitar": "Joshua Young (The Tree)", "section": "wildflower", "clip": "clips/5 wildflower/10 Joshua Young (The Tree).m4a", "conf": "high", "dur": 34.0}, {"ep": "10", "guitar": "Joshua Young (The Tree)", "section": "bflat", "clip": "clips/6 B-flat/10 Joshua Young (The Tree).m4a", "conf": "high", "dur": 20.0}, {"ep": "10", "guitar": "Joshua Young (The Tree)", "section": "keyB", "clip": "clips/7 key of B/10 Joshua Young (The Tree).m4a", "conf": "check", "dur": 20.0}, {"ep": "10", "guitar": "Joshua Young (The Tree)", "section": "fifth", "clip": "clips/8 fifth fret/10 Joshua Young (The Tree).m4a", "conf": "high", "dur": 10.0}, {"ep": "11", "guitar": "Wayne Henderson (The Tree)", "section": "intro", "clip": "clips/1 intro/11 Wayne Henderson (The Tree).m4a", "conf": "high", "dur": 32.0}, {"ep": "11", "guitar": "Wayne Henderson (The Tree)", "section": "bass", "clip": "clips/2 bass/11 Wayne Henderson (The Tree).m4a", "conf": "high", "dur": 18.0}, {"ep": "11", "guitar": "Wayne Henderson (The Tree)", "section": "ballad", "clip": "clips/3 ballad/11 Wayne Henderson (The Tree).m4a", "conf": "high", "dur": 59.0}, {"ep": "11", "guitar": "Wayne Henderson (The Tree)", "section": "keyA", "clip": "clips/4 key of A/11 Wayne Henderson (The Tree).m4a", "conf": "high", "dur": 22.0}, {"ep": "11", "guitar": "Wayne Henderson (The Tree)", "section": "wildflower", "clip": "clips/5 wildflower/11 Wayne Henderson (The Tree).m4a", "conf": "high", "dur": 34.0}, {"ep": "11", "guitar": "Wayne Henderson (The Tree)", "section": "bflat", "clip": "clips/6 B-flat/11 Wayne Henderson (The Tree).m4a", "conf": "high", "dur": 20.0}, {"ep": "11", "guitar": "Wayne Henderson (The Tree)", "section": "keyB", "clip": "clips/7 key of B/11 Wayne Henderson (The Tree).m4a", "conf": "check", "dur": 20.0}, {"ep": "11", "guitar": "Wayne Henderson (The Tree)", "section": "fifth", "clip": "clips/8 fifth fret/11 Wayne Henderson (The Tree).m4a", "conf": "high", "dur": 10.0}, {"ep": "12", "guitar": "Marty Lanham (Nashville Guitar Co)", "section": "intro", "clip": "clips/1 intro/12 Marty Lanham (Nashville Guitar Co).m4a", "conf": "high", "dur": 32.0}, {"ep": "12", "guitar": "Marty Lanham (Nashville Guitar Co)", "section": "bass", "clip": "clips/2 bass/12 Marty Lanham (Nashville Guitar Co).m4a", "conf": "high", "dur": 18.0}, {"ep": "12", "guitar": "Marty Lanham (Nashville Guitar Co)", "section": "ballad", "clip": "clips/3 ballad/12 Marty Lanham (Nashville Guitar Co).m4a", "conf": "high", "dur": 59.0}, {"ep": "12", "guitar": "Marty Lanham (Nashville Guitar Co)", "section": "keyA", "clip": "clips/4 key of A/12 Marty Lanham (Nashville Guitar Co).m4a", "conf": "high", "dur": 22.0}, {"ep": "12", "guitar": "Marty Lanham (Nashville Guitar Co)", "section": "wildflower", "clip": "clips/5 wildflower/12 Marty Lanham (Nashville Guitar Co).m4a", "conf": "high", "dur": 34.0}, {"ep": "12", "guitar": "Marty Lanham (Nashville Guitar Co)", "section": "bflat", "clip": "clips/6 B-flat/12 Marty Lanham (Nashville Guitar Co).m4a", "conf": "high", "dur": 20.0}, {"ep": "12", "guitar": "Marty Lanham (Nashville Guitar Co)", "section": "keyB", "clip": "clips/7 key of B/12 Marty Lanham (Nashville Guitar Co).m4a", "conf": "check", "dur": 20.0}, {"ep": "12", "guitar": "Marty Lanham (Nashville Guitar Co)", "section": "fifth", "clip": "clips/8 fifth fret/12 Marty Lanham (Nashville Guitar Co).m4a", "conf": "high", "dur": 10.0}, {"ep": "13", "guitar": "2011 Martin D-18 Authentic", "section": "intro", "clip": "clips/1 intro/13 2011 Martin D-18 Authentic.m4a", "conf": "high", "dur": 32.0}, {"ep": "13", "guitar": "2011 Martin D-18 Authentic", "section": "bass", "clip": "clips/2 bass/13 2011 Martin D-18 Authentic.m4a", "conf": "high", "dur": 18.0}, {"ep": "13", "guitar": "2011 Martin D-18 Authentic", "section": "ballad", "clip": "clips/3 ballad/13 2011 Martin D-18 Authentic.m4a", "conf": "high", "dur": 59.0}, {"ep": "13", "guitar": "2011 Martin D-18 Authentic", "section": "keyA", "clip": "clips/4 key of A/13 2011 Martin D-18 Authentic.m4a", "conf": "high", "dur": 22.0}, {"ep": "13", "guitar": "2011 Martin D-18 Authentic", "section": "wildflower", "clip": "clips/5 wildflower/13 2011 Martin D-18 Authentic.m4a", "conf": "high", "dur": 34.0}, {"ep": "13", "guitar": "2011 Martin D-18 Authentic", "section": "bflat", "clip": "clips/6 B-flat/13 2011 Martin D-18 Authentic.m4a", "conf": "high", "dur": 20.0}, {"ep": "13", "guitar": "2011 Martin D-18 Authentic", "section": "keyB", "clip": "clips/7 key of B/13 2011 Martin D-18 Authentic.m4a", "conf": "medium", "dur": 20.0}, {"ep": "13", "guitar": "2011 Martin D-18 Authentic", "section": "fifth", "clip": "clips/8 fifth fret/13 2011 Martin D-18 Authentic.m4a", "conf": "high", "dur": 10.0}, {"ep": "14", "guitar": "Altman AD-1", "section": "intro", "clip": "clips/1 intro/14 Altman AD-1.m4a", "conf": "high", "dur": 32.0}, {"ep": "14", "guitar": "Altman AD-1", "section": "bass", "clip": "clips/2 bass/14 Altman AD-1.m4a", "conf": "high", "dur": 18.0}, {"ep": "14", "guitar": "Altman AD-1", "section": "ballad", "clip": "clips/3 ballad/14 Altman AD-1.m4a", "conf": "high", "dur": 59.0}, {"ep": "14", "guitar": "Altman AD-1", "section": "keyA", "clip": "clips/4 key of A/14 Altman AD-1.m4a", "conf": "medium", "dur": 22.0}, {"ep": "14", "guitar": "Altman AD-1", "section": "wildflower", "clip": "clips/5 wildflower/14 Altman AD-1.m4a", "conf": "high", "dur": 34.0}, {"ep": "14", "guitar": "Altman AD-1", "section": "bflat", "clip": "clips/6 B-flat/14 Altman AD-1.m4a", "conf": "high", "dur": 20.0}, {"ep": "14", "guitar": "Altman AD-1", "section": "keyB", "clip": "clips/7 key of B/14 Altman AD-1.m4a", "conf": "medium", "dur": 20.0}, {"ep": "14", "guitar": "Altman AD-1", "section": "fifth", "clip": "clips/8 fifth fret/14 Altman AD-1.m4a", "conf": "high", "dur": 10.0}, {"ep": "15", "guitar": "1937 Martin D-18", "section": "intro", "clip": "clips/1 intro/15 1937 Martin D-18.m4a", "conf": "high", "dur": 32.0}, {"ep": "15", "guitar": "1937 Martin D-18", "section": "bass", "clip": "clips/2 bass/15 1937 Martin D-18.m4a", "conf": "high", "dur": 18.0}, {"ep": "15", "guitar": "1937 Martin D-18", "section": "ballad", "clip": "clips/3 ballad/15 1937 Martin D-18.m4a", "conf": "high", "dur": 59.0}, {"ep": "15", "guitar": "1937 Martin D-18", "section": "keyA", "clip": "clips/4 key of A/15 1937 Martin D-18.m4a", "conf": "high", "dur": 22.0}, {"ep": "15", "guitar": "1937 Martin D-18", "section": "wildflower", "clip": "clips/5 wildflower/15 1937 Martin D-18.m4a", "conf": "high", "dur": 34.0}, {"ep": "15", "guitar": "1937 Martin D-18", "section": "bflat", "clip": "clips/6 B-flat/15 1937 Martin D-18.m4a", "conf": "high", "dur": 20.0}, {"ep": "15", "guitar": "1937 Martin D-18", "section": "keyB", "clip": "clips/7 key of B/15 1937 Martin D-18.m4a", "conf": "high", "dur": 20.0}, {"ep": "15", "guitar": "1937 Martin D-18", "section": "fifth", "clip": "clips/8 fifth fret/15 1937 Martin D-18.m4a", "conf": "high", "dur": 10.0}, {"ep": "16", "guitar": "Caleb Smith", "section": "intro", "clip": "clips/1 intro/16 Caleb Smith.m4a", "conf": "high", "dur": 32.0}, {"ep": "16", "guitar": "Caleb Smith", "section": "bass", "clip": "clips/2 bass/16 Caleb Smith.m4a", "conf": "high", "dur": 18.0}, {"ep": "16", "guitar": "Caleb Smith", "section": "ballad", "clip": "clips/3 ballad/16 Caleb Smith.m4a", "conf": "high", "dur": 59.0}, {"ep": "16", "guitar": "Caleb Smith", "section": "keyA", "clip": "clips/4 key of A/16 Caleb Smith.m4a", "conf": "high", "dur": 22.0}, {"ep": "16", "guitar": "Caleb Smith", "section": "wildflower", "clip": "clips/5 wildflower/16 Caleb Smith.m4a", "conf": "low", "dur": 34.0}, {"ep": "16", "guitar": "Caleb Smith", "section": "bflat", "clip": "clips/6 B-flat/16 Caleb Smith.m4a", "conf": "high", "dur": 20.0}, {"ep": "16", "guitar": "Caleb Smith", "section": "keyB", "clip": "clips/7 key of B/16 Caleb Smith.m4a", "conf": "high", "dur": 20.0}, {"ep": "16", "guitar": "Caleb Smith", "section": "fifth", "clip": "clips/8 fifth fret/16 Caleb Smith.m4a", "conf": "medium", "dur": 10.0}, {"ep": "17", "guitar": "Pre-War Guitar Co", "section": "intro", "clip": "clips/1 intro/17 Pre-War Guitar Co.m4a", "conf": "high", "dur": 32.0}, {"ep": "17", "guitar": "Pre-War Guitar Co", "section": "bass", "clip": "clips/2 bass/17 Pre-War Guitar Co.m4a", "conf": "high", "dur": 18.0}, {"ep": "17", "guitar": "Pre-War Guitar Co", "section": "ballad", "clip": "clips/3 ballad/17 Pre-War Guitar Co.m4a", "conf": "high", "dur": 59.0}, {"ep": "17", "guitar": "Pre-War Guitar Co", "section": "keyA", "clip": "clips/4 key of A/17 Pre-War Guitar Co.m4a", "conf": "high", "dur": 22.0}, {"ep": "17", "guitar": "Pre-War Guitar Co", "section": "wildflower", "clip": "clips/5 wildflower/17 Pre-War Guitar Co.m4a", "conf": "high", "dur": 34.0}, {"ep": "17", "guitar": "Pre-War Guitar Co", "section": "bflat", "clip": "clips/6 B-flat/17 Pre-War Guitar Co.m4a", "conf": "high", "dur": 20.0}, {"ep": "17", "guitar": "Pre-War Guitar Co", "section": "keyB", "clip": "clips/7 key of B/17 Pre-War Guitar Co.m4a", "conf": "check", "dur": 20.0}, {"ep": "17", "guitar": "Pre-War Guitar Co", "section": "fifth", "clip": "clips/8 fifth fret/17 Pre-War Guitar Co.m4a", "conf": "high", "dur": 10.0}, {"ep": "18", "guitar": "Ben Walters", "section": "intro", "clip": "clips/1 intro/18 Ben Walters.m4a", "conf": "high", "dur": 32.0}, {"ep": "18", "guitar": "Ben Walters", "section": "bass", "clip": "clips/2 bass/18 Ben Walters.m4a", "conf": "high", "dur": 18.0}, {"ep": "18", "guitar": "Ben Walters", "section": "ballad", "clip": "clips/3 ballad/18 Ben Walters.m4a", "conf": "high", "dur": 59.0}, {"ep": "18", "guitar": "Ben Walters", "section": "keyA", "clip": "clips/4 key of A/18 Ben Walters.m4a", "conf": "high", "dur": 22.0}, {"ep": "18", "guitar": "Ben Walters", "section": "wildflower", "clip": "clips/5 wildflower/18 Ben Walters.m4a", "conf": "high", "dur": 34.0}, {"ep": "18", "guitar": "Ben Walters", "section": "bflat", "clip": "clips/6 B-flat/18 Ben Walters.m4a", "conf": "high", "dur": 20.0}, {"ep": "18", "guitar": "Ben Walters", "section": "keyB", "clip": "clips/7 key of B/18 Ben Walters.m4a", "conf": "high", "dur": 20.0}, {"ep": "18", "guitar": "Ben Walters", "section": "fifth", "clip": "clips/8 fifth fret/18 Ben Walters.m4a", "conf": "medium", "dur": 10.0}];
+
+// What each section tests. Edit freely; the key must match the clip folder's section name.
+const SECTIONS = {
+  intro:      { label: "Intro",       tests: "Overall voice",            desc: "The opening pass. First impression of the whole guitar." },
+  bass:       { label: "Bass",        tests: "Low end",                  desc: "Depth, punch and clarity of the bass strings." },
+  ballad:     { label: "Ballad",      tests: "Sustain and sweetness",    desc: "A slow old-time ballad. Note bloom, decay and warmth." },
+  keyA:       { label: "Key of A",    tests: "Open-chord drive",         desc: "Rhythm in A. Projection, headroom and chord separation." },
+  wildflower: { label: "Wildflower",  tests: "Lead over rhythm",         desc: "The Wildflower rag in the same key. Melody definition over the strum." },
+  bflat:      { label: "B-flat",      tests: "Capo'd voice, low",        desc: "Capo on, in B-flat. Mids and balance with the capo." },
+  keyB:       { label: "Key of B",    tests: "Capo'd voice, higher",     desc: "Capo on, in B. Treble balance and evenness." },
+  fifth:      { label: "Fifth fret",  tests: "Up the neck",              desc: "Capo at the fifth fret. High-register clarity and sparkle." },
+};
+const ORDER = Object.keys(SECTIONS).filter(s => CLIPS.some(c => c.section === s));
+const GUITARS = [...new Map(CLIPS.map(c => [c.ep, { ep: c.ep, guitar: c.guitar }])).values()].sort((a, b) => a.ep.localeCompare(b.ep));
+const byEp = Object.fromEntries(GUITARS.map(g => [g.ep, g]));
+const clipOf = (ep, sec) => CLIPS.find(c => c.ep === ep && c.section === sec);
+const $ = s => document.querySelector(s);
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const thumb = ep => `<img class="thumb" src="assets/guitars/${ep}.jpg" alt="" onerror="if(this.src.endsWith('.jpg')){this.src='assets/guitars/${ep}.png'}else{this.remove()}">`;
+const store = { get() { try { return JSON.parse(localStorage.getItem("d18.sessions.v2") || "[]"); } catch (e) { return []; } },
+                set(v) { try { localStorage.setItem("d18.sessions.v2", JSON.stringify(v)); } catch (e) {} },
+                save(s) { const all = store.get(); const k = all.findIndex(x => x.id === s.id); if (k >= 0) all[k] = s; else all.push(s); store.set(all); } };
+
+// ---------- player ----------
+function makePlayer(btn, bar) {
+  const audio = new Audio(); let limit = 0; let raf = 0;
+  const reset = () => { btn.textContent = "▶"; bar.style.width = "0%"; };
+  const tick = () => { const d = limit || audio.duration || 1; bar.style.width = Math.min(100, 100 * audio.currentTime / d) + "%";
+    if (limit && audio.currentTime >= limit) { audio.pause(); audio.currentTime = 0; reset(); return; }
+    if (!audio.paused) raf = requestAnimationFrame(tick); };
+  audio.addEventListener("ended", reset);
+  audio.addEventListener("play", () => { btn.textContent = "❚❚"; cancelAnimationFrame(raf); raf = requestAnimationFrame(tick); });
+  audio.addEventListener("pause", () => { if (audio.currentTime > 0 && !audio.ended) btn.textContent = "▶"; });
+  btn.addEventListener("click", () => audio.paused ? audio.play() : audio.pause());
+  return { load(src, lim) { audio.src = encodeURI(src); limit = lim; audio.currentTime = 0; reset(); },
+           play() { audio.currentTime = 0; audio.play().catch(() => {}); }, stop() { audio.pause(); audio.currentTime = 0; reset(); },
+           toggle() { audio.paused ? audio.play().catch(() => {}) : audio.pause(); }, get playing() { return !audio.paused; } };
+}
+
+// ---------- setup ----------
+const opts = { secs: new Set(ORDER.includes("ballad") ? ["ballad"] : [ORDER[0]]), len: 20, mode: "rate", blind: 1 };
+const MODEHELP = {
+  rate: "Each selected section is played through once, every guitar in its own random order. You score each clip 1 to 5. The scorecard averages across sections.",
+  tourney: "Swiss-system tournament: each round pairs guitars of similar standing, so every guitar gets the same number of matchups. Strength is fitted with the Bradley-Terry model, which tolerates the odd inconsistent pick. With several sections selected, each round uses the next section. Play as many rounds as you like; four is a good minimum.",
+  sort: "Binary insertion sort: the fewest comparisons to a complete order (about 59 for 18 guitars), but it assumes your picks are consistent. With several sections selected it sorts each one and averages the ranks.",
+};
+function renderSecs() { $("#secgrid").innerHTML = ORDER.map(s => `<button class="sec${opts.secs.has(s) ? " on" : ""}" data-s="${s}"><b>${SECTIONS[s].label}</b><span>${SECTIONS[s].tests}</span></button>`).join("");
+  const flagged = CLIPS.filter(c => opts.secs.has(c.section) && !["high", "confirmed"].includes(c.conf)).length;
+  $("#secnote").textContent = opts.secs.size ? `${opts.secs.size} section${opts.secs.size > 1 ? "s" : ""} selected` + (flagged ? ` · ${flagged} clip${flagged > 1 ? "s" : ""} still flagged for a listen-check` : "") : "Pick at least one section."; }
+$("#secgrid").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; opts.secs.has(b.dataset.s) ? opts.secs.delete(b.dataset.s) : opts.secs.add(b.dataset.s); renderSecs(); });
+$("#sec-all").addEventListener("click", e => { e.preventDefault(); ORDER.forEach(s => opts.secs.add(s)); renderSecs(); });
+$("#sec-none").addEventListener("click", e => { e.preventDefault(); opts.secs.clear(); renderSecs(); });
+renderSecs();
+for (const id of ["len", "mode", "blind"]) $("#" + id).addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return;
+  [...e.currentTarget.children].forEach(x => x.classList.toggle("on", x === b)); opts[id] = id === "mode" ? b.dataset.v : +b.dataset.v; $("#modehelp").textContent = MODEHELP[opts.mode]; });
+$("#modehelp").textContent = MODEHELP.rate;
+function show(id) { for (const s of ["setup", "rate", "pair", "round", "results"]) $("#" + s).classList.toggle("hidden", s !== id); window.scrollTo(0, 0); }
+const secList = s => s.sections.map(x => SECTIONS[x].label).join(", ");
+const MODENAME = { rate: "rated 1 to 5", tourney: "head to head", sort: "quick sort" };
+function renderHistory() { const h = store.get(); if (!h.length) { $("#histlist").textContent = "None yet."; return; }
+  $("#histlist").innerHTML = h.slice().reverse().map(s => `<div class="bar"><span>${new Date(s.date).toLocaleString()} · ${secList(s)} · ${MODENAME[s.mode]} · ${s.len ? s.len + " s" : "full"}</span><button class="btn ghost small" data-id="${s.id}">View</button></div>`).join("");
+  $("#histlist").querySelectorAll("button").forEach(b => b.addEventListener("click", () => showResults(h.find(x => x.id === b.dataset.id)))); }
+$("#clear").addEventListener("click", () => { if (confirm("Delete all saved sessions?")) { store.set([]); renderHistory(); } });
+renderHistory();
+$("#start").addEventListener("click", () => { const secs = ORDER.filter(s => opts.secs.has(s)); if (!secs.length) return alert("Pick at least one section.");
+  ({ rate: startRate, tourney: startTourney, sort: startSort })[opts.mode](secs); });
+const newSession = (mode, secs) => ({ id: String(Date.now()), date: new Date().toISOString(), mode, sections: secs, len: opts.len, blind: opts.blind });
+
+// ---------- rate mode ----------
+let R = null;
+const ratePlayer = makePlayer($("#rate-play"), $("#rate-bar"));
+$("#rate-stars").innerHTML = [1, 2, 3, 4, 5].map(n => `<button data-n="${n}">${n}</button>`).join("");
+$("#rate-stars").addEventListener("click", e => { const b = e.target.closest("button"); if (b) rateCurrent(+b.dataset.n); });
+$("#rate-quit").addEventListener("click", () => { ratePlayer.stop(); show("setup"); });
+$("#rate-back").addEventListener("click", () => gotoRate(R.i - 1));
+$("#rate-resume").addEventListener("click", () => gotoRate(nextUnrated()));
+$("#rate-next").addEventListener("click", () => gotoSection(R.s + 1));
+$("#rate-finish").addEventListener("click", finishRate);
+$("#rate-strip").addEventListener("click", e => { const b = e.target.closest("button"); if (b) gotoRate(+b.dataset.k); });
+$("#rate-tabs").addEventListener("click", e => { const b = e.target.closest("button"); if (b) gotoSection(+b.dataset.s); });
+const cs = () => R.secs[R.s];
+const nextUnrated = (sec = cs()) => R.ratings[sec].findIndex(r => r === null);
+const gname = (c, k) => opts.blind ? `Guitar ${k + 1}` : c.guitar;
+function startRate(secs) { R = { session: newSession("rate", secs), secs, s: 0, i: 0, lists: {}, ratings: {} };
+  for (const sec of secs) { R.lists[sec] = shuffle(CLIPS.filter(c => c.section === sec)); R.ratings[sec] = new Array(R.lists[sec].length).fill(null); }
+  show("rate"); loadRate(); }
+function gotoRate(k) { if (k < 0 || k >= R.lists[cs()].length) return; ratePlayer.stop(); R.i = k; loadRate(); }
+function gotoSection(s) { if (s < 0 || s >= R.secs.length) return; ratePlayer.stop(); R.s = s; const nu = nextUnrated(); R.i = nu === -1 ? 0 : nu; loadRate(); }
+function loadRate() {
+  const sec = cs(), list = R.lists[sec], rat = R.ratings[sec], c = list[R.i], nu = nextUnrated(), rated = rat.filter(r => r !== null).length;
+  const allDone = R.secs.every(s => !R.ratings[s].includes(null));
+  $("#rate-tabs").innerHTML = R.secs.map((s, k) => `<button class="chip${k === R.s ? " on" : ""}${!R.ratings[s].includes(null) ? " done" : ""}" data-s="${k}">${SECTIONS[s].label} · ${R.ratings[s].filter(r => r !== null).length}/${R.ratings[s].length}</button>`).join("");
+  $("#rate-prog").textContent = `Guitar ${R.i + 1} of ${list.length} · ${rated} rated`;
+  $("#rate-tests").textContent = `${SECTIONS[sec].label} · ${SECTIONS[sec].tests}. ${SECTIONS[sec].desc}`;
+  $("#rate-label").textContent = gname(c, R.i) + (rat[R.i] !== null ? "  (revisiting)" : "");
+  const img = $("#rate-img"); img.classList.toggle("hidden", !!opts.blind); if (!opts.blind) { img.src = `assets/guitars/${c.ep}.jpg`; img.onerror = () => img.classList.add("hidden"); }
+  $("#rate-stars").querySelectorAll("button").forEach(b => b.classList.toggle("on", +b.dataset.n === rat[R.i]));
+  $("#rate-back").disabled = R.i === 0;
+  $("#rate-resume").classList.toggle("hidden", !(nu !== -1 && nu !== R.i));
+  $("#rate-next").classList.toggle("hidden", !(nu === -1 && R.s < R.secs.length - 1));
+  $("#rate-finish").classList.toggle("hidden", !allDone);
+  const lim = nu === -1 ? list.length : nu;
+  $("#rate-strip").innerHTML = list.map((cc, k) => (rat[k] === null && k > Math.max(R.i, lim)) ? "" :
+    `<button class="chip${k === R.i ? " on" : ""}${rat[k] === null ? " unrated" : ""}" data-k="${k}">${gname(cc, k)}${rat[k] !== null ? " · " + rat[k] : ""}</button>`).join("");
+  ratePlayer.load(c.clip, opts.len); setTimeout(() => ratePlayer.play(), 250);
+}
+function rateCurrent(n) { ratePlayer.stop(); R.ratings[cs()][R.i] = n; const nu = nextUnrated();
+  if (nu === -1) { loadRate(); ratePlayer.stop(); return; }      // section complete: stay, so you can revisit or move on
+  R.i = nu; loadRate(); }
+function finishRate() { ratePlayer.stop(); const s = R.session;
+  s.rows = GUITARS.map(g => ({ ep: g.ep, guitar: g.guitar, scores: Object.fromEntries(R.secs.map(sec => [sec, R.ratings[sec][R.lists[sec].findIndex(c => c.ep === g.ep)]])) }));
+  rankRate(s); store.save(s); renderHistory(); showResults(s); }
+function rankRate(s) { for (const r of s.rows) { const v = Object.values(r.scores).filter(x => x !== null); r.avg = v.length ? v.reduce((a, b) => a + b, 0) / v.length : 0; }
+  s.rows.sort((a, b) => b.avg - a.avg || a.ep.localeCompare(b.ep)); s.rows.forEach((r, i) => r.rank = i + 1); }
+
+// ---------- shared pair UI ----------
+let P = null;   // active pair controller: { kind: "tourney"|"sort", ... }
+const pa = makePlayer($("#pa-play"), $("#pa-bar")), pb = makePlayer($("#pb-play"), $("#pb-bar"));
+$("#pick-a").addEventListener("click", () => P && P.decide("a")); $("#pick-b").addEventListener("click", () => P && P.decide("b")); $("#pick-tie").addEventListener("click", () => P && P.decide("tie"));
+$("#pair-quit").addEventListener("click", () => { pa.stop(); pb.stop(); show("setup"); });
+$("#pair-undo").addEventListener("click", () => P && P.undo());
+function showMatch(sec, epA, epB, progText, canUndo) {
+  $("#pair-sec").textContent = SECTIONS[sec].label; $("#pair-tests").textContent = `${SECTIONS[sec].tests}. ${SECTIONS[sec].desc}`;
+  $("#pair-prog").textContent = progText; $("#pair-undo").disabled = !canUndo;
+  $("#pa-label").textContent = opts.blind ? "A" : byEp[epA].guitar; $("#pb-label").textContent = opts.blind ? "B" : byEp[epB].guitar;
+  pa.load(clipOf(epA, sec).clip, opts.len); pb.load(clipOf(epB, sec).clip, opts.len); show("pair"); setTimeout(() => pa.play(), 250); }
+
+// ---------- Bradley-Terry fit (Hunter 2004 MM) with ties as half wins and a light prior ----------
+function fitBT(eps, results) {
+  const n = eps.length, idx = Object.fromEntries(eps.map((e, i) => [e, i]));
+  const wins = new Array(n).fill(0.5), games = new Map();          // 0.5 = one virtual tie against an average guitar
+  for (const r of results) { const i = idx[r.a], j = idx[r.b]; const key = i < j ? i + "," + j : j + "," + i; games.set(key, (games.get(key) || 0) + 1);
+    if (r.outcome === "a") wins[i] += 1; else if (r.outcome === "b") wins[j] += 1; else { wins[i] += .5; wins[j] += .5; } }
+  let th = new Array(n).fill(1);
+  for (let it = 0; it < 300; it++) {
+    const nt = th.map((t, i) => { let d = 1 / (t + 1); for (const [key, g] of games) { const [a, b] = key.split(",").map(Number); if (a === i) d += g / (t + th[b]); else if (b === i) d += g / (t + th[a]); } return wins[i] / d; });
+    const gm = Math.exp(nt.reduce((s, x) => s + Math.log(x), 0) / n); th = nt.map(x => x / gm);
+  }
+  return Object.fromEntries(eps.map((e, i) => [e, th[i]]));
+}
+const record = (ep, results, sec) => results.filter(r => (!sec || r.sec === sec) && (r.a === ep || r.b === ep)).reduce((o, r) => { const me = r.a === ep ? "a" : "b"; r.outcome === "tie" ? o.t++ : r.outcome === me ? o.w++ : o.l++; return o; }, { w: 0, l: 0, t: 0 });
+
+// ---------- tournament: Swiss pairing + Bradley-Terry ----------
+function startTourney(secs) {
+  const eps = GUITARS.map(g => g.ep);
+  const T = { kind: "tourney", session: newSession("tourney", secs), secs, eps, round: 0, results: [], pairs: [], k: 0, theta: null, prevOrder: null,
+    sec() { return T.secs[T.round % T.secs.length]; },
+    order() { return T.theta ? eps.slice().sort((a, b) => T.theta[b] - T.theta[a]) : shuffle(eps); },
+    faced(a, b) { return T.results.some(r => (r.a === a && r.b === b) || (r.a === b && r.b === a)); },
+    newRound() { const ord = T.order(), left = ord.slice(), pairs = [];
+      while (left.length > 1) { const a = left.shift(); let j = left.findIndex(b => !T.faced(a, b)); if (j < 0) j = 0; pairs.push(Math.random() < .5 ? [a, left[j]] : [left[j], a]); left.splice(j, 1); }
+      T.pairs = pairs; T.k = 0; T.bye = left[0] || null; T.next(); },
+    next() { if (T.k >= T.pairs.length) return T.endRound();
+      const [a, b] = T.pairs[T.k]; showMatch(T.sec(), a, b, `Round ${T.round + 1} · matchup ${T.k + 1} of ${T.pairs.length} · ${T.results.length} comparisons so far`, T.k > 0); },
+    decide(ch) { pa.stop(); pb.stop(); const [a, b] = T.pairs[T.k]; T.results.push({ a, b, sec: T.sec(), outcome: ch }); T.k++; T.next(); },
+    undo() { if (T.k === 0) return; pa.stop(); pb.stop(); T.results.pop(); T.k--; T.next(); },
+    endRound() { const before = T.prevOrder; T.theta = fitBT(eps, T.results); const ord = T.order(); T.prevOrder = ord; T.round++;
+      const moved = before ? ord.filter((e, i) => before[i] !== e).length : null;
+      $("#round-title").textContent = `Round ${T.round} complete`;
+      $("#round-text").innerHTML = `${T.results.length} comparisons so far.` + (moved === null ? " First standings are in." : ` <b>${moved}</b> of ${eps.length} guitars changed position since the last round` + (moved <= 2 ? ", so the ranking is settling." : "."))
+        + (T.round < 4 ? ` Four rounds is a good minimum.` : "") + (T.secs.length > 1 ? ` Next round listens to <b>${SECTIONS[T.secs[T.round % T.secs.length]].label}</b>.` : "");
+      $("#round-table").innerHTML = opts.blind ? `<p class="small muted">Standings stay hidden while the session is blind.</p>` :
+        `<table>${ord.map((e, i) => `<tr><td class="num">${i + 1}</td><td>${byEp[e].guitar}</td><td class="num">${Math.round(100 * T.theta[e] / (T.theta[e] + 1))}%</td></tr>`).join("")}</table>`;
+      show("round"); },
+    finish() { const s = T.session; const th = T.theta || fitBT(eps, T.results);
+      s.comparisons = T.results.length; s.rounds = T.round; s.results = T.results;
+      s.rows = eps.map(e => ({ ep: e, guitar: byEp[e].guitar, strength: th[e], winp: th[e] / (th[e] + 1), rec: record(e, T.results), secrec: Object.fromEntries(secs.map(x => [x, record(e, T.results, x)])) }));
+      s.rows.sort((a, b) => b.strength - a.strength); s.rows.forEach((r, i) => r.rank = i + 1);
+      store.save(s); renderHistory(); showResults(s); } };
+  P = T; T.newRound();
+}
+$("#round-next").addEventListener("click", () => P && P.newRound());
+$("#round-finish").addEventListener("click", () => P && P.finish());
+
+// ---------- quick sort: binary insertion, one section at a time ----------
+function startSort(secs) {
+  const S = { kind: "sort", session: newSession("sort", secs), secs, s: 0, ranks: {}, st: null, done: 0,
+    est: secs.length * (() => { let t = 0; for (let k = 1; k < GUITARS.length; k++) t += Math.ceil(Math.log2(k + 1)); return t; })(),
+    begin() { const order = shuffle(GUITARS.map(g => g.ep)); S.st = { order, sorted: [order[0]], i: 1, lo: 0, hi: 1, hist: [] }; S.next(); },
+    next() { const st = S.st;
+      if (st.i >= st.order.length) { S.ranks[S.secs[S.s]] = st.sorted.slice(); S.s++; return S.s < S.secs.length ? S.begin() : S.finish(); }
+      if (st.lo >= st.hi) { st.sorted.splice(st.lo, 0, st.order[st.i]); st.i++; st.lo = 0; st.hi = st.sorted.length; return S.next(); }
+      st.mid = Math.floor((st.lo + st.hi) / 2); st.flip = Math.random() < .5; const nw = st.order[st.i], old = st.sorted[st.mid]; st.A = st.flip ? old : nw; st.B = st.flip ? nw : old;
+      showMatch(S.secs[S.s], st.A, st.B, `Comparison ${S.done + 1} of about ${S.est} · section ${S.s + 1} of ${S.secs.length} · ${st.i} of ${st.order.length} guitars placed`, st.hist.length > 0); },
+    decide(ch) { pa.stop(); pb.stop(); const st = S.st; st.hist.push({ sorted: st.sorted.slice(), i: st.i, lo: st.lo, hi: st.hi, done: S.done }); S.done++;
+      const nw = st.order[st.i]; const newWins = ch === "tie" ? null : ((ch === "a") === (st.A === nw));
+      if (newWins === null) st.lo = st.hi = st.mid; else if (newWins) st.hi = st.mid; else st.lo = st.mid + 1; S.next(); },
+    undo() { const st = S.st; if (!st.hist.length) return; pa.stop(); pb.stop(); const h = st.hist.pop(); Object.assign(st, { sorted: h.sorted, i: h.i, lo: h.lo, hi: h.hi }); S.done = h.done; S.next(); },
+    finish() { const s = S.session; s.comparisons = S.done;
+      s.rows = GUITARS.map(g => ({ ep: g.ep, guitar: g.guitar, ranks: Object.fromEntries(secs.map(x => [x, S.ranks[x].indexOf(g.ep) + 1])) }));
+      for (const r of s.rows) r.meanRank = Object.values(r.ranks).reduce((a, b) => a + b, 0) / secs.length;
+      s.rows.sort((a, b) => a.meanRank - b.meanRank || a.ep.localeCompare(b.ep)); s.rows.forEach((r, i) => r.rank = i + 1);
+      store.save(s); renderHistory(); showResults(s); } };
+  P = S; S.begin();
+}
+
+// ---------- results ----------
+let current = null, editing = null; const resPlayer = makePlayer(document.createElement("button"), document.createElement("i"));
+function showResults(s) { current = s; show("results"); resPlayer.stop();
+  const secs = s.sections, multi = secs.length > 1;
+  $("#res-title").textContent = `${secList(s)} · ${MODENAME[s.mode]}`;
+  $("#res-sub").textContent = `${new Date(s.date).toLocaleString()}${s.comparisons ? ` · ${s.comparisons} comparisons` : ""}${s.rounds ? ` · ${s.rounds} rounds` : ""}`;
+  let head, body;
+  if (s.mode === "rate") {
+    head = `<th>#</th><th>Guitar</th>${secs.map(x => `<th class="num">${SECTIONS[x].label}</th>`).join("")}${multi ? `<th class="num">Average</th>` : ""}`;
+    body = s.rows.map(r => `<tr><td class="num">${r.rank}</td><td>${thumb(r.ep)}${r.guitar} <span class="pill">ep ${r.ep}</span></td>${secs.map(x => `<td class="num score">${
+      editing && editing.ep === r.ep && editing.sec === x ? `<span class="mini">${[1,2,3,4,5].map(n => `<button data-ep="${r.ep}" data-sec="${x}" data-n="${n}" class="${r.scores[x] === n ? "on" : ""}">${n}</button>`).join("")}</span>`
+      : `<button data-edit="${r.ep}|${x}" title="Play and change">${r.scores[x] ?? "–"}</button>`}</td>`).join("")}${multi ? `<td class="num"><b>${r.avg.toFixed(2)}</b></td>` : ""}</tr>`).join("");
+    $("#res-hint").textContent = "Click a score to hear that clip again and change it. Edits save automatically.";
+  } else if (s.mode === "tourney") {
+    head = `<th>#</th><th>Guitar</th><th class="num" title="Bradley-Terry: chance of beating an average guitar in the set">Beats avg.</th><th class="num">W-L-T</th>${multi ? secs.map(x => `<th class="num">${SECTIONS[x].label}</th>`).join("") : ""}`;
+    body = s.rows.map(r => `<tr><td class="num">${r.rank}</td><td>${thumb(r.ep)}${r.guitar} <span class="pill">ep ${r.ep}</span> <button class="cellbtn" data-play="${r.ep}|${secs[0]}">▶</button></td><td class="num"><b>${Math.round(100 * r.winp)}%</b></td><td class="num">${r.rec.w}-${r.rec.l}-${r.rec.t}</td>${multi ? secs.map(x => `<td class="num">${r.secrec[x].w}-${r.secrec[x].l}-${r.secrec[x].t}</td>`).join("") : ""}</tr>`).join("");
+    $("#res-hint").textContent = "Beats avg. is the fitted Bradley-Terry strength expressed as the chance of winning a matchup against an average guitar in this set. Per-section columns show that section's wins-losses-ties.";
+  } else {
+    head = `<th>#</th><th>Guitar</th>${secs.map(x => `<th class="num">${SECTIONS[x].label}</th>`).join("")}${multi ? `<th class="num">Mean rank</th>` : ""}`;
+    body = s.rows.map(r => `<tr><td class="num">${r.rank}</td><td>${thumb(r.ep)}${r.guitar} <span class="pill">ep ${r.ep}</span> <button class="cellbtn" data-play="${r.ep}|${secs[0]}">▶</button></td>${secs.map(x => `<td class="num">${r.ranks[x]}</td>`).join("")}${multi ? `<td class="num"><b>${r.meanRank.toFixed(1)}</b></td>` : ""}</tr>`).join("");
+    $("#res-hint").textContent = multi ? "Per-section rank from each sort, averaged." : "";
+  }
+  $("#res-table").innerHTML = `<tr>${head}</tr>${body}`;
+  $("#res-table").querySelectorAll("button[data-play]").forEach(b => b.addEventListener("click", () => { const [ep, sec] = b.dataset.play.split("|"); if (resPlayer.playing) resPlayer.stop(); else { resPlayer.load(clipOf(ep, sec).clip, s.len); resPlayer.play(); } }));
+  $("#res-table").querySelectorAll("button[data-edit]").forEach(b => b.addEventListener("click", () => { const [ep, sec] = b.dataset.edit.split("|"); editing = { ep, sec }; showResults(s); resPlayer.load(clipOf(ep, sec).clip, s.len); resPlayer.play(); }));
+  $("#res-table").querySelectorAll(".mini button").forEach(b => b.addEventListener("click", () => { const r = s.rows.find(x => x.ep === b.dataset.ep); r.scores[b.dataset.sec] = +b.dataset.n; editing = null; rankRate(s); store.save(s); renderHistory(); showResults(s); }));
+}
+$("#res-home").addEventListener("click", () => { resPlayer.stop(); editing = null; show("setup"); });
+$("#res-export").addEventListener("click", () => { const s = current, secs = s.sections; let cols, rows;
+  if (s.mode === "rate") { cols = ["rank", "ep", "guitar", ...secs, "average"]; rows = s.rows.map(r => [r.rank, r.ep, r.guitar, ...secs.map(x => r.scores[x] ?? ""), r.avg.toFixed(2)]); }
+  else if (s.mode === "tourney") { cols = ["rank", "ep", "guitar", "beats_avg_pct", "strength", "wins", "losses", "ties", ...secs.map(x => x + "_wlt")]; rows = s.rows.map(r => [r.rank, r.ep, r.guitar, Math.round(100 * r.winp), r.strength.toFixed(3), r.rec.w, r.rec.l, r.rec.t, ...secs.map(x => `${r.secrec[x].w}-${r.secrec[x].l}-${r.secrec[x].t}`)]); }
+  else { cols = ["rank", "ep", "guitar", ...secs.map(x => x + "_rank"), "mean_rank"]; rows = s.rows.map(r => [r.rank, r.ep, r.guitar, ...secs.map(x => r.ranks[x]), r.meanRank.toFixed(2)]); }
+  const csv = [cols.join(","), ...rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(","))].join("\n");
+  const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" })); a.download = `d18-${s.mode}-${secs.join("+")}-${s.date.slice(0, 10)}.csv`; a.click(); });
+
+// ---------- keys ----------
+document.addEventListener("keydown", e => { if (/INPUT|SELECT|TEXTAREA/.test(e.target.tagName)) return;
+  const inRate = !$("#rate").classList.contains("hidden"), inPair = !$("#pair").classList.contains("hidden");
+  if (e.code === "Space") { e.preventDefault(); if (inRate) ratePlayer.toggle(); if (inPair) (pb.playing ? pb : pa).toggle(); }
+  if (e.key === "r") { if (inRate) ratePlayer.play(); if (inPair) pa.play(); }
+  if (inRate && /^[1-5]$/.test(e.key)) rateCurrent(+e.key);
+  if (inRate && e.key === "[") gotoRate(R.i - 1); if (inRate && e.key === "]") gotoRate(R.i + 1);
+  if (inPair && e.key === "ArrowLeft") P.decide("a"); if (inPair && e.key === "ArrowRight") P.decide("b");
+  if (inPair && e.key === "z") P.undo();
+  if (inPair && e.key === "a") { pb.stop(); pa.play(); } if (inPair && e.key === "b") { pa.stop(); pb.play(); } });
+</script>
+</body>
+</html>
