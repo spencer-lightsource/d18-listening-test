@@ -119,6 +119,10 @@
   .note svg { flex: none; width: 24px; height: 24px; }
   .progress { position: relative; height: 6px; background: var(--soft); border-radius: 3px; overflow: hidden; margin: 12px 0; cursor: pointer; touch-action: none; }
   .progress::before { content: ""; position: absolute; inset: -10px 0; }
+  .homebar { display: flex; align-items: baseline; gap: 12px; margin: 0 0 12px; }
+  .homebar a { display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); color: var(--ink); font-size: 13.5px; font-weight: 600; text-decoration: none; }
+  .homebar a:hover { border-color: var(--ink); text-decoration: none; }
+  .masthead h1 { cursor: pointer; }
   .journey { margin: 0 0 14px; }
   .journey .progress { height: 8px; cursor: default; margin: 0; }
   .journey .progress i { background: linear-gradient(90deg, var(--accent), #e9a24f); transition: width .35s ease; }
@@ -199,6 +203,8 @@
     <h1>Which D-18 sounds best to you?</h1>
     <p class="lede">A blind listening test of eighteen hand-built D-18s from the USA Luthier Collection. Score short clips without knowing which guitar is which, and we'll reveal your favorite.</p>
   </div>
+
+  <div id="homebar" class="homebar hidden"><a href="#" id="home-link">← Home</a><span class="tiny muted" id="homebar-note"></span></div>
 
   <!-- SETUP -->
   <section id="setup">
@@ -473,8 +479,14 @@ $("#modeinfo-btn").addEventListener("click", e => { e.preventDefault(); $("#mode
 function optsSummary() { const m = { rate: "Rate 1 to 5", tourney: "Head to head", sort: "Quick sort" }[opts.mode];
   $("#opts-summary").textContent = `${opts.len ? opts.len + "-second" : "Full-length"} clips · ${m} · ${opts.blind ? "blind" : "names shown"}`; }
 optsSummary();
+function goHome() { for (const pl of PLAYERS) pl.stop(); try { alt.running = false; } catch (e) {} editing = null;
+  if ((R && !R.done) || (P && !(P.done || P.done3))) saveProgress(); showResume(); show("setup"); }
+$("#home-link").addEventListener("click", e => { e.preventDefault(); goHome(); });
+document.querySelector(".masthead h1").addEventListener("click", () => { if ($("#setup").classList.contains("hidden")) goHome(); else window.scrollTo({ top: 0, behavior: "smooth" }); });
 function show(id) { for (const s of ["setup", "rate", "pair", "round", "results", "compare"]) $("#" + s).classList.toggle("hidden", s !== id);
-  if (id === "setup") window.scrollTo(0, 0); else { const y = $("#" + id).getBoundingClientRect().top + window.scrollY - 12; window.scrollTo({ top: Math.max(0, y), behavior: "smooth" }); } }
+  $("#homebar").classList.toggle("hidden", id === "setup");
+  $("#homebar-note").textContent = { rate: "Your progress is saved if you leave.", pair: "Your progress is saved if you leave.", round: "", results: "Results are saved on this device.", compare: "" }[id] || "";
+  if (id === "setup") window.scrollTo(0, 0); else { const y = $("#homebar").getBoundingClientRect().top + window.scrollY - 12; window.scrollTo({ top: Math.max(0, y), behavior: "smooth" }); } }
 const secList = s => s.sections.map(x => SECTIONS[x].label).join(", ");
 const MODENAME = { rate: "rated 1 to 5", tourney: "head to head", sort: "quick sort" };
 function renderHistory() { const h = store.get(); $("#history").style.display = h.length ? "" : "none"; $("#cmp-open").style.display = h.length > 1 ? "" : "none"; if (!h.length) { $("#histlist").textContent = ""; return; }
@@ -534,7 +546,7 @@ function showCalib(sec) {
   $("#rate-tabs").innerHTML = R.secs.map((x, k) => `<button class="chip${k === R.s ? " on" : ""}${!R.ratings[x].includes(null) ? " done" : ""}" data-s="${k}">${SECTIONS[x].label} · ${R.ratings[x].filter(r => r !== null).length}/${R.ratings[x].length}</button>`).join("");
   $("#rate-back").disabled = true;
   $("#calib-tests").textContent = `${SECTIONS[sec].label} · ${SECTIONS[sec].tests}. ${SECTIONS[sec].desc}`;
-  shuffle(R.lists[sec]).slice(0, 3).forEach((c, i) => cal[i].load(c.clip, opts.len)); setTimeout(() => cal[0].play(), 250); }
+  shuffle(R.lists[sec]).slice(0, 3).forEach((c, i) => cal[i].load(c.clip, opts.len)); setTimeout(() => { if (R && !$("#calib").classList.contains("hidden")) cal[0].play(); }, 250); }
 function endCalib() { cal.forEach(o => o.stop()); R.calib[cs()] = true; loadRate(); saveProgress(); }
 $("#calib-go").addEventListener("click", endCalib); $("#calib-skip").addEventListener("click", endCalib);
 $("#rate-flag").addEventListener("click", () => flagClip(R.session, R.lists[cs()][R.i], $("#rate-flag")));
@@ -569,7 +581,7 @@ function loadRate() {
   $("#rate-strip").innerHTML = list.map((cc, k) => (rat[k] === null && k > Math.max(R.i, lim)) ? "" :
     `<button class="chip${k === R.i ? " on" : ""}${rat[k] === null ? " unrated" : ""}" data-k="${k}">${gname(cc, k)}${rat[k] !== null ? " · " + rat[k] : ""}</button>`).join("");
   const fb = $("#rate-flag"); const flagged = R.session.flags.some(f => f.ep === c.ep && f.section === sec); fb.textContent = flagged ? "Flagged. Thanks." : "Something wrong with this clip? Flag it"; fb.classList.toggle("done", flagged);
-  ratePlayer.load(c.clip, opts.len); setTimeout(() => ratePlayer.play(), 250);
+  ratePlayer.load(c.clip, opts.len); setTimeout(() => { if (R && !$("#rate").classList.contains("hidden") && !$("#rate-ui").classList.contains("hidden")) ratePlayer.play(); }, 250);
   const nxt = list[(R.i + 1) % list.length]; if (nxt) prefetch(nxt.clip);
 }
 function rateCurrent(n) { ratePlayer.stop(); R.ratings[cs()][R.i] = n; saveProgress(); const nu = nextUnrated();
@@ -609,7 +621,7 @@ function showMatch(sec, epA, epB, progText, canUndo) {
   $("#pair-sec").textContent = SECTIONS[sec].label; $("#pair-tests").textContent = `${SECTIONS[sec].tests}. ${SECTIONS[sec].desc}`;
   $("#pair-prog").textContent = progText; $("#pair-undo").disabled = !canUndo;
   $("#pa-label").textContent = opts.blind ? "A" : byEp[epA].guitar; $("#pb-label").textContent = opts.blind ? "B" : byEp[epB].guitar;
-  pa.load(clipOf(epA, sec).clip, opts.len); pb.load(clipOf(epB, sec).clip, opts.len); show("pair"); setTimeout(() => alt.on ? altStart() : pa.play(), 250); }
+  pa.load(clipOf(epA, sec).clip, opts.len); pb.load(clipOf(epB, sec).clip, opts.len); show("pair"); setTimeout(() => { if (P && !$("#pair").classList.contains("hidden")) (alt.on ? altStart() : pa.play()); }, 250); }
 
 // ---------- Bradley-Terry fit (Hunter 2004 MM) with ties as half wins and a light prior ----------
 function fitBT(eps, results) {
