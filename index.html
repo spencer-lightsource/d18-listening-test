@@ -2,8 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#fbfbf9" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f0f10" media="(prefers-color-scheme: dark)">
 <title>D-18 Listening Test</title>
+<script>try { const t = localStorage.getItem("d18.theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap">
 <style>
@@ -124,7 +127,27 @@
   .credits p { margin: 0 0 10px; font-size: 14px; }
   .credits .thanks { font-family: Fraunces, Georgia, serif; font-style: italic; font-size: 17px; line-height: 1.45; color: var(--ink); margin-bottom: 14px; }
   kbd { font: 11px ui-monospace, Menlo, monospace; background: var(--soft); padding: 1px 6px; border-radius: 4px; border: 1px solid var(--line); }
-  @media (max-width: 640px) { .pair.three { grid-template-columns: 1fr; } .hero { height: 300px; } .masthead { margin-top: -110px; } .story { grid-template-columns: 1fr; gap: 22px; } .credits { grid-template-columns: 1fr; } .pair { grid-template-columns: 1fr; } .stars button { width: 48px; height: 48px; } }
+  @media (max-width: 640px) {
+    .keys { display: none; }
+    .row { flex-direction: column; align-items: stretch; gap: 8px; }
+    .row .seg { display: flex; } .row .seg button { flex: 1; text-align: center; padding: 10px 6px; }
+    input[type=text] { width: 100%; min-width: 0; }
+    .secgrid { grid-template-columns: 1fr 1fr; }
+    .sec { padding: 9px 10px; } .sec b { font-size: 13.5px; } .sec span { font-size: 11.5px; }
+    .pair.three { grid-template-columns: repeat(3, 1fr); gap: 8px; } .pair.three .card { padding: 12px 6px; } .pair.three .play.small { width: 50px; height: 50px; font-size: 18px; }
+    .winner .label { font-size: 28px; }
+    .label { font-size: 24px; }
+    .strip .chip { padding: 5px 9px; font-size: 12px; }
+    .btn.big { padding: 15px 18px; }
+    .bar .right .btn.small { padding: 7px 10px; }
+    th, td { padding: 8px 5px; font-size: 13px; }
+    .pill { display: none; }
+    .thumb { width: 26px; height: 34px; margin-right: 6px; }
+    .scroll table td:nth-child(2), .scroll table th:nth-child(2) { white-space: normal; min-width: 110px; max-width: 140px; line-height: 1.25; }
+    .scroll table th:first-child, .scroll table td:first-child { position: sticky; left: 0; z-index: 2; background: var(--card); width: 22px; min-width: 22px; }
+    .scroll table th:nth-child(2), .scroll table td:nth-child(2) { position: sticky; left: 32px; z-index: 2; background: var(--card); box-shadow: 6px 0 8px -6px rgba(0,0,0,.35); }
+    .scroll { margin: 0 -22px 0 -8px; padding: 0 8px; }
+    .hero { height: 300px; } .masthead { margin-top: -110px; } .story { grid-template-columns: 1fr; gap: 22px; } .credits { grid-template-columns: 1fr; } .pair { grid-template-columns: 1fr; } .stars button { width: 48px; height: 48px; } }
 </style>
 </head>
 <body>
@@ -168,6 +191,8 @@
         <span class="seg" id="len"><button data-v="10">10 s</button><button data-v="20" class="on">20 s</button><button data-v="0">Full</button></span></div>
       <div class="row"><span class="k">Mode</span>
         <span class="seg" id="mode"><button data-v="rate" class="on">Rate 1 to 5</button><button data-v="tourney">Head to head</button><button data-v="sort">Quick sort</button></span></div>
+      <div class="row"><span class="k">Appearance</span>
+        <span class="seg" id="theme"><button data-v="auto">Auto</button><button data-v="light">Light</button><button data-v="dark">Dark</button></span></div>
       <div class="row"><span class="k">Blind until the scorecard</span>
         <span class="seg" id="blind"><button data-v="1" class="on">On</button><button data-v="0">Off</button></span></div>
       <p class="small muted" id="modehelp"></p>
@@ -188,7 +213,7 @@
         <p class="tiny muted">Clips are short excerpts used for personal listening comparison.</p>
       </div>
     </div>
-    <p class="tiny muted">Keys: <kbd>space</kbd> play/pause · <kbd>1</kbd>–<kbd>5</kbd> rate · <kbd>←</kbd>/<kbd>→</kbd> pick A/B · <kbd>a</kbd>/<kbd>b</kbd> play A/B · <kbd>r</kbd> replay · <kbd>z</kbd> undo · <kbd>[</kbd>/<kbd>]</kbd> previous/next guitar</p>
+    <p class="tiny muted keys">Keys: <kbd>space</kbd> play/pause · <kbd>1</kbd>–<kbd>5</kbd> rate · <kbd>←</kbd>/<kbd>→</kbd> pick A/B · <kbd>a</kbd>/<kbd>b</kbd> play A/B · <kbd>r</kbd> replay · <kbd>z</kbd> undo · <kbd>[</kbd>/<kbd>]</kbd> previous/next guitar</p>
   </section>
 
   <!-- RATE -->
@@ -337,6 +362,21 @@ function makePlayer(btn, bar) {
            toggle() { audio.paused ? audio.play().catch(() => {}) : audio.pause(); }, get playing() { return !audio.paused; } };
   PLAYERS.push(self); return self;
 }
+
+// iOS Safari only lets audio start inside a user gesture; a silent play on each element during the first tap unlocks them.
+const SILENCE = "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQAAAAA=";
+let unlocked = false;
+function unlockAudio() { if (unlocked) return; unlocked = true;
+  for (const pl of PLAYERS) { if (pl.audio.src) continue; pl.audio.src = SILENCE; const pr = pl.audio.play(); if (pr && pr.then) pr.then(() => { if (pl.audio.src === SILENCE) { pl.audio.pause(); pl.audio.removeAttribute("src"); pl.audio.load(); } }).catch(() => {}); } }
+document.addEventListener("touchend", unlockAudio, { capture: true, passive: true });
+document.addEventListener("click", unlockAudio, true);
+
+// ---------- appearance ----------
+(function () { let t = "auto"; try { t = localStorage.getItem("d18.theme") || "auto"; } catch (e) {}
+  const apply = v => { if (v === "light" || v === "dark") document.documentElement.dataset.theme = v; else delete document.documentElement.dataset.theme;
+    $("#theme").querySelectorAll("button").forEach(b => b.classList.toggle("on", b.dataset.v === v)); };
+  apply(t);
+  $("#theme").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; apply(b.dataset.v); try { localStorage.setItem("d18.theme", b.dataset.v); } catch (err) {} }); })();
 
 // ---------- setup ----------
 const opts = { secs: new Set(ORDER.includes("ballad") ? ["ballad"] : [ORDER[0]]), len: 20, mode: "rate", blind: 1 };
