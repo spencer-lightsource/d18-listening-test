@@ -27,6 +27,7 @@
   * { box-sizing: border-box; }
   html, body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.55 Inter, -apple-system, "SF Pro Text", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
   main { max-width: 880px; margin: 0 auto; padding: 0 20px 80px; }
+  body { overflow-x: hidden; }
   h1 { font-family: Fraunces, "Iowan Old Style", Georgia, serif; font-weight: 500; font-size: clamp(38px, 6vw, 60px); line-height: 1.02; margin: 0; letter-spacing: -0.025em; }
   h2 { font-size: 11px; margin: 0 0 14px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
   a { color: var(--accent); text-decoration: none; } a:hover { text-decoration: underline; }
@@ -57,13 +58,19 @@
   .steps b { font-size: 14px; font-weight: 600; } .steps span:not(.n) { color: var(--muted); font-size: 13.5px; }
 
   .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 22px; margin-bottom: 14px; }
-  .row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 13px 0; border-bottom: 1px solid var(--line); }
+  .row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 12px; padding: 13px 0; border-bottom: 1px solid var(--line); }
   .row:last-child { border-bottom: 0; }
   .row .k { font-weight: 600; font-size: 14px; }
-  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--card); }
+  .seg { display: inline-flex; flex-wrap: wrap; max-width: 100%; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--card); }
   .seg button { background: transparent; color: var(--ink); border: 0; padding: 7px 13px; cursor: pointer; font: inherit; font-size: 13.5px; font-weight: 500; }
   .seg button + button { border-left: 1px solid var(--line); }
   .seg button.on { background: var(--ink); color: var(--bg); }
+  input[type=text] { font: inherit; font-size: 14px; padding: 8px 11px; border: 1px solid var(--line); border-radius: 8px; background: var(--card); color: var(--ink); min-width: 220px; max-width: 100%; }
+  input[type=text]:focus { outline: 2px solid var(--accent); outline-offset: 1px; border-color: transparent; }
+  .top1 { color: var(--accent); font-weight: 700; }
+  .winner { text-align: center; padding: 6px 0 20px; border-bottom: 1px solid var(--line); margin-bottom: 16px; }
+  .winner .label { font-size: 34px; margin: 4px 0 6px; }
+  .winner img { height: 150px; border-radius: 8px; display: block; margin: 0 auto 10px; }
   .btn { background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 8px; padding: 11px 18px; font: inherit; font-weight: 600; cursor: pointer; }
   .btn.ghost { background: var(--soft); color: var(--ink); }
   .btn.big { font-size: 16px; padding: 15px 22px; width: 100%; margin-top: 6px; }
@@ -99,6 +106,7 @@
   .pair .card { margin: 0; }
   .pair.three { grid-template-columns: repeat(3, 1fr); }
   .choices { display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px; margin-top: 14px; }
+  @media (max-width: 640px) { .choices { grid-template-columns: 1fr 1fr; } .choices #pick-tie { grid-column: 1 / -1; order: 3; } }
   .scroll { overflow-x: auto; margin: 0 -8px; padding: 0 8px; }
   table { width: 100%; border-collapse: collapse; font-size: 14px; }
   th, td { text-align: left; padding: 10px 7px; border-bottom: 1px solid var(--line); vertical-align: middle; white-space: nowrap; }
@@ -107,7 +115,7 @@
   td.score button, .cellbtn { background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 4px 9px; cursor: pointer; font: inherit; font-size: 13px; color: var(--ink); }
   .thumb { width: 34px; height: 44px; object-fit: cover; border-radius: 4px; vertical-align: middle; margin-right: 8px; background: var(--soft); filter: grayscale(1); }
   .pill { display: inline-block; padding: 1px 7px; border-radius: 4px; background: var(--soft); font-size: 11px; color: var(--muted); letter-spacing: .04em; }
-  .bar { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .bar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 10px; margin-bottom: 8px; }
   .bar .right { display: flex; gap: 6px; }
   .hidden { display: none !important; }
   .warn { color: var(--warn); } .good { color: var(--good); }
@@ -152,9 +160,10 @@
     </div>
     </details>
     <div class="card">
-      <div class="bar" style="align-items:baseline"><h2>What to listen to</h2><span class="small muted">We recommend three sections. Any number works.</span></div>
+      <div class="bar" style="align-items:baseline"><h2>What to listen to</h2><span class="small muted">We recommend three sections. Any number works. <b id="eta" style="color:var(--ink)"></b></span></div>
       <div class="secgrid" id="secgrid"></div>
       <div class="links"><a href="#" id="sec-all">Select all</a><a href="#" id="sec-none">Clear</a><span class="muted" id="secnote"></span></div>
+      <div class="row"><span class="k">Listener</span><input type="text" id="listener" placeholder="Your name" maxlength="40" autocomplete="name"></div>
       <div class="row"><span class="k">Clip length</span>
         <span class="seg" id="len"><button data-v="10">10 s</button><button data-v="20" class="on">20 s</button><button data-v="0">Full</button></span></div>
       <div class="row"><span class="k">Mode</span>
@@ -168,7 +177,8 @@
       </div>
       <button class="btn big" id="start">Start listening</button>
     </div>
-    <div class="card" id="history"><div class="bar"><h2 style="margin:0">Past sessions</h2><button class="btn ghost small" id="clear">Clear all</button></div><div id="histlist" class="small muted">None yet.</div></div>
+    <div class="card" id="history"><div class="bar"><h2 style="margin:0">Past sessions</h2><span class="right"><button class="btn small" id="cmp-open">Compare listeners</button><button class="btn ghost small" id="clear">Clear all</button></span></div><div id="histlist" class="small muted">None yet.</div>
+      <p class="tiny muted" style="margin:12px 0 0">Results live in this browser. To bring in someone else's, open the share link they copied from their scorecard.</p></div>
     <div class="credits">
       <img src="assets/dales-card.jpg" alt="Dale's Showstoppers Guitars" onerror="this.remove()">
       <div>
@@ -248,15 +258,32 @@
     </div>
   </section>
 
+  <!-- COMPARE -->
+  <section id="compare" class="hidden">
+    <div class="card">
+      <div class="bar"><h2 style="margin:0">Compare listeners</h2><button class="btn ghost small" id="cmp-home">Back</button></div>
+      <div class="strip" id="cmp-pick" style="justify-content:flex-start;margin:4px 0 12px"></div>
+      <div class="scroll"><table id="cmp-table"></table></div>
+      <div id="cmp-agree" class="small muted" style="margin-top:12px"></div>
+    </div>
+  </section>
+
   <!-- RESULTS -->
   <section id="results" class="hidden">
     <div class="card">
+      <div id="res-win" class="winner hidden">
+        <div class="eyebrow" id="win-eyebrow">Congrats</div>
+        <div class="label" id="win-title"></div>
+        <p class="small muted" id="win-sub" style="margin:0 0 12px"></p>
+        <button class="btn small" id="win-play">▶ Hear the winner</button>
+      </div>
       <div class="bar"><h2 style="margin:0" id="res-title"></h2><span class="small muted" id="res-sub"></span></div>
       <div class="scroll"><table id="res-table"></table></div>
       <p class="small muted" id="res-hint"></p>
       <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:14px">
+        <button class="btn" id="res-share">Copy share link</button>
         <button class="btn ghost" id="res-export">Export CSV</button>
-        <button class="btn" id="res-home">New session</button>
+        <button class="btn ghost" id="res-home">New session</button>
       </div>
     </div>
   </section>
@@ -305,32 +332,47 @@ function makePlayer(btn, bar) {
 
 // ---------- setup ----------
 const opts = { secs: new Set(ORDER.includes("ballad") ? ["ballad"] : [ORDER[0]]), len: 20, mode: "rate", blind: 1 };
+try { $("#listener").value = localStorage.getItem("d18.listener") || ""; } catch (e) {}
+const listenerName = () => ($("#listener").value.trim() || "Guest");
+$("#listener").addEventListener("change", () => { try { localStorage.setItem("d18.listener", $("#listener").value.trim()); } catch (e) {} });
 const MODEHELP = {
   rate: "Each selected section is played through once, every guitar in its own random order. You score each clip 1 to 5. The scorecard averages across sections.",
   tourney: "Swiss-system tournament: each round pairs guitars of similar standing, so every guitar gets the same number of matchups. Strength is fitted with the Bradley-Terry model, which tolerates the odd inconsistent pick. With several sections selected, each round uses the next section. Play as many rounds as you like; four is a good minimum.",
   sort: "Binary insertion sort: the fewest comparisons to a complete order (about 59 for 18 guitars), but it assumes your picks are consistent. With several sections selected it sorts each one and averages the ranks.",
 };
+const sortComparisons = n => { let t = 0; for (let k = 1; k < n; k++) t += Math.ceil(Math.log2(k + 1)); return t; };
+function estimateSeconds() {
+  const secs = ORDER.filter(x => opts.secs.has(x)), n = GUITARS.length;
+  const clipLen = sec => { const cs = CLIPS.filter(c => c.section === sec); const full = cs.reduce((t, c) => t + c.dur, 0) / Math.max(cs.length, 1); return opts.len ? Math.min(opts.len, full) : full; };
+  if (!secs.length) return 0;
+  if (opts.mode === "rate") return secs.reduce((t, sec) => t + n * (clipLen(sec) + 3) + 3 * clipLen(sec), 0);
+  if (opts.mode === "tourney") return Array.from({ length: 4 }, (_, r) => Math.floor(n / 2) * (2 * clipLen(secs[r % secs.length]) + 4)).reduce((a, b) => a + b, 0);
+  return secs.reduce((t, sec) => t + sortComparisons(n) * (2 * clipLen(sec) + 4), 0);
+}
+function updateEta() { const m = Math.round(estimateSeconds() / 60); if (!m) { $("#eta").textContent = ""; return; }
+  $("#eta").textContent = `About ${m >= 60 ? `${Math.floor(m / 60)} h ${m % 60 ? (m % 60) + " min" : ""}`.trim() : m + " min"}${opts.mode === "tourney" ? " for four rounds" : ""}.`; }
 function renderSecs() { $("#secgrid").innerHTML = ORDER.map(s => `<button class="sec${opts.secs.has(s) ? " on" : ""}" data-s="${s}"><b>${SECTIONS[s].label}</b><span>${SECTIONS[s].tests}</span></button>`).join("");
   const flagged = CLIPS.filter(c => opts.secs.has(c.section) && !["high", "confirmed"].includes(c.conf)).length;
-  $("#secnote").textContent = opts.secs.size ? `${opts.secs.size} section${opts.secs.size > 1 ? "s" : ""} selected` + (flagged ? ` · ${flagged} clip${flagged > 1 ? "s" : ""} still flagged for a listen-check` : "") : "Pick at least one section."; }
+  $("#secnote").textContent = opts.secs.size ? `${opts.secs.size} section${opts.secs.size > 1 ? "s" : ""} selected` + (flagged ? ` · ${flagged} clip${flagged > 1 ? "s" : ""} still flagged for a listen-check` : "") : "Pick at least one section."; updateEta(); }
 $("#secgrid").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; opts.secs.has(b.dataset.s) ? opts.secs.delete(b.dataset.s) : opts.secs.add(b.dataset.s); renderSecs(); });
 $("#sec-all").addEventListener("click", e => { e.preventDefault(); ORDER.forEach(s => opts.secs.add(s)); renderSecs(); });
 $("#sec-none").addEventListener("click", e => { e.preventDefault(); opts.secs.clear(); renderSecs(); });
 renderSecs();
 for (const id of ["len", "mode", "blind"]) $("#" + id).addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return;
-  [...e.currentTarget.children].forEach(x => x.classList.toggle("on", x === b)); opts[id] = id === "mode" ? b.dataset.v : +b.dataset.v; $("#modehelp").textContent = MODEHELP[opts.mode]; });
+  [...e.currentTarget.children].forEach(x => x.classList.toggle("on", x === b)); opts[id] = id === "mode" ? b.dataset.v : +b.dataset.v; $("#modehelp").textContent = MODEHELP[opts.mode]; updateEta(); });
 $("#modehelp").textContent = MODEHELP.rate;
-function show(id) { for (const s of ["setup", "rate", "pair", "round", "results"]) $("#" + s).classList.toggle("hidden", s !== id); window.scrollTo(0, 0); }
+function show(id) { for (const s of ["setup", "rate", "pair", "round", "results", "compare"]) $("#" + s).classList.toggle("hidden", s !== id); window.scrollTo(0, 0); }
 const secList = s => s.sections.map(x => SECTIONS[x].label).join(", ");
 const MODENAME = { rate: "rated 1 to 5", tourney: "head to head", sort: "quick sort" };
 function renderHistory() { const h = store.get(); if (!h.length) { $("#histlist").textContent = "None yet."; return; }
-  $("#histlist").innerHTML = h.slice().reverse().map(s => `<div class="bar"><span>${new Date(s.date).toLocaleString()} · ${secList(s)} · ${MODENAME[s.mode]} · ${s.len ? s.len + " s" : "full"}</span><button class="btn ghost small" data-id="${s.id}">View</button></div>`).join("");
+  $("#histlist").innerHTML = h.slice().reverse().map(s => `<div class="bar"><span><b>${s.listener || "Guest"}</b> · ${new Date(s.date).toLocaleString()} · ${secList(s)} · ${MODENAME[s.mode]} · ${s.len ? s.len + " s" : "full"}</span><button class="btn ghost small" data-id="${s.id}">View</button></div>`).join("");
+  $("#cmp-open").disabled = h.length < 2;
   $("#histlist").querySelectorAll("button").forEach(b => b.addEventListener("click", () => showResults(h.find(x => x.id === b.dataset.id)))); }
 $("#clear").addEventListener("click", () => { if (confirm("Delete all saved sessions?")) { store.set([]); renderHistory(); } });
 renderHistory();
 $("#start").addEventListener("click", () => { const secs = ORDER.filter(s => opts.secs.has(s)); if (!secs.length) return alert("Pick at least one section.");
   ({ rate: startRate, tourney: startTourney, sort: startSort })[opts.mode](secs); });
-const newSession = (mode, secs) => ({ id: String(Date.now()), date: new Date().toISOString(), mode, sections: secs, len: opts.len, blind: opts.blind });
+const newSession = (mode, secs) => ({ id: String(Date.now()), date: new Date().toISOString(), mode, sections: secs, len: opts.len, blind: opts.blind, listener: listenerName() });
 
 // ---------- rate mode ----------
 let R = null;
@@ -384,11 +426,12 @@ function loadRate() {
   ratePlayer.load(c.clip, opts.len); setTimeout(() => ratePlayer.play(), 250);
 }
 function rateCurrent(n) { ratePlayer.stop(); R.ratings[cs()][R.i] = n; const nu = nextUnrated();
-  if (nu === -1) { loadRate(); ratePlayer.stop(); return; }      // section complete: stay, so you can revisit or move on
+  if (R.secs.every(x => !R.ratings[x].includes(null))) return finishRate();   // last guitar of the last section: straight to the reveal
+  if (nu === -1) { const k = R.secs.findIndex(x => R.ratings[x].includes(null)); return gotoSection(k); }   // section done: on to the next unfinished one
   R.i = nu; loadRate(); }
 function finishRate() { ratePlayer.stop(); const s = R.session;
   s.rows = GUITARS.map(g => ({ ep: g.ep, guitar: g.guitar, scores: Object.fromEntries(R.secs.map(sec => [sec, R.ratings[sec][R.lists[sec].findIndex(c => c.ep === g.ep)]])) }));
-  rankRate(s); store.save(s); renderHistory(); showResults(s); }
+  rankRate(s); store.save(s); renderHistory(); showResults(s, true); }
 function rankRate(s) { for (const r of s.rows) { const v = Object.values(r.scores).filter(x => x !== null); r.avg = v.length ? v.reduce((a, b) => a + b, 0) / v.length : 0; }
   s.rows.sort((a, b) => b.avg - a.avg || a.ep.localeCompare(b.ep)); s.rows.forEach((r, i) => r.rank = i + 1); }
 
@@ -445,7 +488,7 @@ function startTourney(secs) {
       s.comparisons = T.results.length; s.rounds = T.round; s.results = T.results;
       s.rows = eps.map(e => ({ ep: e, guitar: byEp[e].guitar, strength: th[e], winp: th[e] / (th[e] + 1), rec: record(e, T.results), secrec: Object.fromEntries(secs.map(x => [x, record(e, T.results, x)])) }));
       s.rows.sort((a, b) => b.strength - a.strength); s.rows.forEach((r, i) => r.rank = i + 1);
-      store.save(s); renderHistory(); showResults(s); } };
+      store.save(s); renderHistory(); showResults(s, true); } };
   P = T; T.newRound();
 }
 $("#round-next").addEventListener("click", () => P && P.newRound());
@@ -469,15 +512,38 @@ function startSort(secs) {
       s.rows = GUITARS.map(g => ({ ep: g.ep, guitar: g.guitar, ranks: Object.fromEntries(secs.map(x => [x, S.ranks[x].indexOf(g.ep) + 1])) }));
       for (const r of s.rows) r.meanRank = Object.values(r.ranks).reduce((a, b) => a + b, 0) / secs.length;
       s.rows.sort((a, b) => a.meanRank - b.meanRank || a.ep.localeCompare(b.ep)); s.rows.forEach((r, i) => r.rank = i + 1);
-      store.save(s); renderHistory(); showResults(s); } };
+      store.save(s); renderHistory(); showResults(s, true); } };
   P = S; S.begin();
 }
 
 // ---------- results ----------
 let current = null, editing = null; const resPlayer = makePlayer(document.createElement("button"), document.createElement("i"));
-function showResults(s) { current = s; show("results"); resPlayer.stop();
+function winnerText(s) { const w = s.rows[0], secs = s.sections, multi = secs.length > 1;
+  if (s.mode === "rate") { const ties = s.rows.filter(r => r.avg === w.avg && r !== w).map(r => r.guitar);
+    return [multi ? `Average ${w.avg.toFixed(2)} across ${secs.length} sections` : `Scored ${w.avg} out of 5`, ties.length ? ` · tied with ${ties.join(", ")}` : ""].join(""); }
+  if (s.mode === "tourney") return `Beats an average guitar in this set ${Math.round(100 * w.winp)}% of the time · ${w.rec.w}-${w.rec.l}-${w.rec.t} record`;
+  return multi ? `Mean rank ${w.meanRank.toFixed(1)} across ${secs.length} sections` : `Sorted to the top in ${s.comparisons} comparisons`; }
+function confetti() {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const c = document.createElement("canvas"); c.style.cssText = "position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:50"; document.body.appendChild(c);
+  const dpr = devicePixelRatio || 1, W = c.width = innerWidth * dpr, H = c.height = innerHeight * dpr, ctx = c.getContext("2d");
+  const cols = [getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#b8382b", "#e9c46a", "#2a9d8f", "#f4f1de", "#264653", "#e76f51"];
+  const ps = Array.from({ length: 220 }, () => ({ x: Math.random() * W, y: -Math.random() * H * .4, vx: (Math.random() - .5) * 3 * dpr, vy: (2 + Math.random() * 4) * dpr, s: (6 + Math.random() * 8) * dpr, r: Math.random() * Math.PI, vr: (Math.random() - .5) * .25, c: cols[Math.floor(Math.random() * cols.length)] }));
+  const t0 = performance.now();
+  (function frame(t) { const el = t - t0; ctx.clearRect(0, 0, W, H);
+    for (const p of ps) { p.x += p.vx; p.y += p.vy; p.vy += .04 * dpr; p.r += p.vr; ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r); ctx.globalAlpha = Math.max(0, 1 - el / 3600); ctx.fillStyle = p.c; ctx.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2); ctx.restore(); }
+    if (el < 3800) requestAnimationFrame(frame); else c.remove(); })(t0);
+}
+function showResults(s, celebrate = false) { current = s; show("results"); resPlayer.stop();
   const secs = s.sections, multi = secs.length > 1;
-  $("#res-title").textContent = `${secList(s)} · ${MODENAME[s.mode]}`;
+  const w = s.rows[0]; $("#res-win").classList.remove("hidden");
+  $("#win-eyebrow").textContent = celebrate ? `Congrats, ${s.listener || "listener"}!` : `${s.listener || "Guest"}'s top pick`;
+  $("#win-title").innerHTML = `${celebrate ? "Your ears chose " : ""}${w.guitar}`;
+  $("#win-sub").textContent = winnerText(s);
+  const wp = $("#win-play"); wp.onclick = () => { if (resPlayer.playing) { resPlayer.stop(); wp.textContent = "▶ Hear the winner"; } else { resPlayer.load(clipOf(w.ep, secs[0]).clip, 0); resPlayer.play(); wp.textContent = "❚❚ Playing " + SECTIONS[secs[0]].label.toLowerCase(); } };
+  wp.textContent = "▶ Hear the winner";
+  if (celebrate) setTimeout(confetti, 150);
+  $("#res-title").textContent = `${s.listener || "Guest"} · ${secList(s)} · ${MODENAME[s.mode]}`;
   $("#res-sub").textContent = `${new Date(s.date).toLocaleString()}${s.comparisons ? ` · ${s.comparisons} comparisons` : ""}${s.rounds ? ` · ${s.rounds} rounds` : ""}`;
   let head, body;
   if (s.mode === "rate") {
@@ -507,6 +573,55 @@ $("#res-export").addEventListener("click", () => { const s = current, secs = s.s
   else { cols = ["rank", "ep", "guitar", ...secs.map(x => x + "_rank"), "mean_rank"]; rows = s.rows.map(r => [r.rank, r.ep, r.guitar, ...secs.map(x => r.ranks[x]), r.meanRank.toFixed(2)]); }
   const csv = [cols.join(","), ...rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(","))].join("\n");
   const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" })); a.download = `d18-${s.mode}-${secs.join("+")}-${s.date.slice(0, 10)}.csv`; a.click(); });
+
+// ---------- share link: the whole session packed into the URL hash ----------
+function encodeSession(s) {
+  const secs = s.sections, rows = s.rows.map(r => s.mode === "rate" ? [r.ep, secs.map(x => r.scores[x])] : s.mode === "tourney" ? [r.ep, +r.winp.toFixed(3), r.rec.w, r.rec.l, r.rec.t] : [r.ep, secs.map(x => r.ranks[x])]);
+  const o = { v: 1, id: s.id, d: s.date, n: s.listener || "Guest", m: s.mode, s: secs, l: s.len, c: s.comparisons || 0, r: rows };
+  return btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+function decodeSession(code) {
+  const o = JSON.parse(decodeURIComponent(escape(atob(code.replace(/-/g, "+").replace(/_/g, "/")))));
+  if (o.v !== 1) throw new Error("unknown version");
+  const s = { id: o.id, date: o.d, listener: o.n, mode: o.m, sections: o.s, len: o.l, comparisons: o.c, blind: 1, imported: true };
+  s.rows = o.r.map(r => { const g = byEp[r[0]] || { guitar: "ep " + r[0] };
+    if (o.m === "rate") return { ep: r[0], guitar: g.guitar, scores: Object.fromEntries(o.s.map((x, i) => [x, r[1][i]])) };
+    if (o.m === "tourney") return { ep: r[0], guitar: g.guitar, winp: r[1], strength: r[1] / (1 - r[1]), rec: { w: r[2], l: r[3], t: r[4] }, secrec: Object.fromEntries(o.s.map(x => [x, { w: "–", l: "", t: "" }])) };
+    return { ep: r[0], guitar: g.guitar, ranks: Object.fromEntries(o.s.map((x, i) => [x, r[1][i]])) }; });
+  if (o.m === "rate") rankRate(s);
+  else if (o.m === "tourney") { s.rows.sort((a, b) => b.winp - a.winp); s.rows.forEach((r, i) => r.rank = i + 1); }
+  else { for (const r of s.rows) r.meanRank = Object.values(r.ranks).reduce((a, b) => a + b, 0) / o.s.length; s.rows.sort((a, b) => a.meanRank - b.meanRank); s.rows.forEach((r, i) => r.rank = i + 1); }
+  return s;
+}
+$("#res-share").addEventListener("click", async () => { const url = location.href.split("#")[0] + "#s=" + encodeSession(current);
+  try { await navigator.clipboard.writeText(url); $("#res-share").textContent = "Link copied"; setTimeout(() => $("#res-share").textContent = "Copy share link", 2000); }
+  catch (e) { prompt("Copy this link:", url); } });
+(function importFromHash() { const m = location.hash.match(/#s=([A-Za-z0-9_-]+)/); if (!m) return;
+  try { const s = decodeSession(m[1]); store.save(s); renderHistory(); history.replaceState(null, "", location.pathname); showResults(s); }
+  catch (e) { console.warn("could not import shared session", e); } })();
+
+// ---------- compare listeners ----------
+let cmpSel = new Set();
+$("#cmp-open").addEventListener("click", () => { const h = store.get(); cmpSel = new Set(h.slice(-2).map(x => x.id)); show("compare"); renderCompare(); });
+$("#cmp-home").addEventListener("click", () => show("setup"));
+$("#cmp-pick").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; cmpSel.has(b.dataset.id) ? cmpSel.delete(b.dataset.id) : cmpSel.add(b.dataset.id); renderCompare(); });
+const sessLabel = s => `${s.listener || "Guest"} · ${secList(s)} · ${MODENAME[s.mode]} · ${new Date(s.date).toLocaleDateString()}`;
+function spearman(a, b) { const eps = Object.keys(a).filter(e => e in b); const n = eps.length; if (n < 3) return null;
+  const d2 = eps.reduce((t, e) => t + (a[e] - b[e]) ** 2, 0); return 1 - 6 * d2 / (n * (n * n - 1)); }
+function renderCompare() {
+  const h = store.get(); const sel = h.filter(s => cmpSel.has(s.id));
+  $("#cmp-pick").innerHTML = h.slice().reverse().map(s => `<button class="chip${cmpSel.has(s.id) ? " on" : ""}" data-id="${s.id}">${sessLabel(s)}</button>`).join("");
+  if (sel.length < 2) { $("#cmp-table").innerHTML = ""; $("#cmp-agree").textContent = "Pick two or more sessions to compare."; return; }
+  const rankMaps = sel.map(s => Object.fromEntries(s.rows.map(r => [r.ep, r.rank])));
+  const detail = (s, r) => s.mode === "rate" ? (s.sections.length > 1 ? r.avg.toFixed(1) : r.scores[s.sections[0]]) : s.mode === "tourney" ? Math.round(100 * r.winp) + "%" : "";
+  const eps = [...new Set(sel.flatMap(s => s.rows.map(r => r.ep)))];
+  const rows = eps.map(ep => { const ranks = rankMaps.map(m => m[ep]).filter(x => x != null); return { ep, guitar: (byEp[ep] || {}).guitar || ep, mean: ranks.reduce((a, b) => a + b, 0) / ranks.length, ranks }; }).sort((a, b) => a.mean - b.mean);
+  $("#cmp-table").innerHTML = `<tr><th>#</th><th>Guitar</th>${sel.map(s => `<th class="num">${s.listener || "Guest"}<br><span style="font-weight:400;text-transform:none;letter-spacing:0">${MODENAME[s.mode]}</span></th>`).join("")}<th class="num">Mean rank</th></tr>` +
+    rows.map((r, i) => `<tr><td class="num">${i + 1}</td><td>${thumb(r.ep)}${r.guitar} <span class="pill">ep ${r.ep}</span></td>${sel.map((s, k) => { const row = s.rows.find(x => x.ep === r.ep); const rk = rankMaps[k][r.ep]; return `<td class="num${rk === 1 ? " top1" : ""}">${rk ?? "–"}${row ? ` <span class="tiny muted">${detail(s, row)}</span>` : ""}</td>`; }).join("")}<td class="num"><b>${r.mean.toFixed(1)}</b></td></tr>`).join("");
+  const pairs = [];
+  for (let i = 0; i < sel.length; i++) for (let j = i + 1; j < sel.length; j++) { const rho = spearman(rankMaps[i], rankMaps[j]); if (rho !== null) pairs.push(`${sel[i].listener || "Guest"} vs ${sel[j].listener || "Guest"}: <b>${rho.toFixed(2)}</b>`); }
+  $("#cmp-agree").innerHTML = (pairs.length ? "Agreement (Spearman rank correlation, 1 = identical order, 0 = unrelated, −1 = opposite): " + pairs.join(" · ") + ". " : "") + "Each listener's #1 is highlighted. Mean rank averages the positions across the selected sessions.";
+}
 
 // ---------- keys ----------
 document.addEventListener("keydown", e => { if (/INPUT|SELECT|TEXTAREA/.test(e.target.tagName)) return;
