@@ -97,6 +97,7 @@
   .mini button { width: 30px; height: 30px; border-radius: 6px; border: 1px solid var(--line); background: var(--card); color: var(--ink); font-size: 13px; cursor: pointer; }
   .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   .pair .card { margin: 0; }
+  .pair.three { grid-template-columns: repeat(3, 1fr); }
   .choices { display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px; margin-top: 14px; }
   .scroll { overflow-x: auto; margin: 0 -8px; padding: 0 8px; }
   table { width: 100%; border-collapse: collapse; font-size: 14px; }
@@ -115,7 +116,7 @@
   .credits p { margin: 0 0 10px; font-size: 14px; }
   .credits .thanks { font-family: Fraunces, Georgia, serif; font-style: italic; font-size: 17px; line-height: 1.45; color: var(--ink); margin-bottom: 14px; }
   kbd { font: 11px ui-monospace, Menlo, monospace; background: var(--soft); padding: 1px 6px; border-radius: 4px; border: 1px solid var(--line); }
-  @media (max-width: 640px) { .hero { height: 300px; } .masthead { margin-top: -110px; } .story { grid-template-columns: 1fr; gap: 22px; } .credits { grid-template-columns: 1fr; } .pair { grid-template-columns: 1fr; } .stars button { width: 48px; height: 48px; } }
+  @media (max-width: 640px) { .pair.three { grid-template-columns: 1fr; } .hero { height: 300px; } .masthead { margin-top: -110px; } .story { grid-template-columns: 1fr; gap: 22px; } .credits { grid-template-columns: 1fr; } .pair { grid-template-columns: 1fr; } .stars button { width: 48px; height: 48px; } }
 </style>
 </head>
 <body>
@@ -186,7 +187,18 @@
       <div class="tabs" id="rate-tabs"></div>
       <div class="bar"><span class="muted" id="rate-prog"></span>
         <span class="right"><button class="btn ghost small" id="rate-back">← Back</button><button class="btn ghost small" id="rate-quit">Quit</button></span></div>
-      <div class="center">
+      <div id="calib" class="hidden center">
+        <div class="tiny muted" id="calib-tests"></div>
+        <div class="label">Calibrate your ears</div>
+        <p class="small muted" style="max-width:520px;margin:0 auto 14px">Hear three guitars before you score anything, so your first scores aren't guesses. All three come back for scoring later.</p>
+        <div class="pair three">
+          <div class="card center"><div class="tiny muted">Sample 1</div><button class="play small" id="c1-play">▶</button><div class="progress"><i id="c1-bar"></i></div></div>
+          <div class="card center"><div class="tiny muted">Sample 2</div><button class="play small" id="c2-play">▶</button><div class="progress"><i id="c2-bar"></i></div></div>
+          <div class="card center"><div class="tiny muted">Sample 3</div><button class="play small" id="c3-play">▶</button><div class="progress"><i id="c3-bar"></i></div></div>
+        </div>
+        <div style="display:flex; gap:10px; justify-content:center; margin-top:16px"><button class="btn" id="calib-go">Start scoring</button><button class="btn ghost" id="calib-skip">Skip</button></div>
+      </div>
+      <div class="center" id="rate-ui">
         <div class="tiny muted" id="rate-tests"></div>
         <div class="label" id="rate-label"></div>
         <img id="rate-img" class="hidden" style="height:120px;border-radius:10px;margin-bottom:10px" alt="">
@@ -325,7 +337,7 @@ let R = null;
 const ratePlayer = makePlayer($("#rate-play"), $("#rate-bar"));
 $("#rate-stars").innerHTML = [1, 2, 3, 4, 5].map(n => `<button data-n="${n}">${n}</button>`).join("");
 $("#rate-stars").addEventListener("click", e => { const b = e.target.closest("button"); if (b) rateCurrent(+b.dataset.n); });
-$("#rate-quit").addEventListener("click", () => { ratePlayer.stop(); show("setup"); });
+$("#rate-quit").addEventListener("click", () => { ratePlayer.stop(); cal.forEach(o => o.stop()); show("setup"); });
 $("#rate-back").addEventListener("click", () => gotoRate(R.i - 1));
 $("#rate-resume").addEventListener("click", () => gotoRate(nextUnrated()));
 $("#rate-next").addEventListener("click", () => gotoSection(R.s + 1));
@@ -335,13 +347,26 @@ $("#rate-tabs").addEventListener("click", e => { const b = e.target.closest("but
 const cs = () => R.secs[R.s];
 const nextUnrated = (sec = cs()) => R.ratings[sec].findIndex(r => r === null);
 const gname = (c, k) => opts.blind ? `Guitar ${k + 1}` : c.guitar;
-function startRate(secs) { R = { session: newSession("rate", secs), secs, s: 0, i: 0, lists: {}, ratings: {} };
+function startRate(secs) { R = { session: newSession("rate", secs), secs, s: 0, i: 0, lists: {}, ratings: {}, calib: {} };
   for (const sec of secs) { R.lists[sec] = shuffle(CLIPS.filter(c => c.section === sec)); R.ratings[sec] = new Array(R.lists[sec].length).fill(null); }
   show("rate"); loadRate(); }
 function gotoRate(k) { if (k < 0 || k >= R.lists[cs()].length) return; ratePlayer.stop(); R.i = k; loadRate(); }
 function gotoSection(s) { if (s < 0 || s >= R.secs.length) return; ratePlayer.stop(); R.s = s; const nu = nextUnrated(); R.i = nu === -1 ? 0 : nu; loadRate(); }
+const cal = [1, 2, 3].map(n => makePlayer($(`#c${n}-play`), $(`#c${n}-bar`)));
+cal.forEach((pl, i) => $(`#c${i + 1}-play`).addEventListener("click", () => cal.forEach((o, j) => j !== i && o.stop()), true));
+function showCalib(sec) {
+  $("#rate-ui").classList.add("hidden"); $("#calib").classList.remove("hidden"); ratePlayer.stop();
+  $("#rate-tabs").innerHTML = R.secs.map((x, k) => `<button class="chip${k === R.s ? " on" : ""}${!R.ratings[x].includes(null) ? " done" : ""}" data-s="${k}">${SECTIONS[x].label} · ${R.ratings[x].filter(r => r !== null).length}/${R.ratings[x].length}</button>`).join("");
+  $("#rate-prog").textContent = `${SECTIONS[sec].label} · calibration`; $("#rate-back").disabled = true;
+  $("#calib-tests").textContent = `${SECTIONS[sec].label} · ${SECTIONS[sec].tests}. ${SECTIONS[sec].desc}`;
+  shuffle(R.lists[sec]).slice(0, 3).forEach((c, i) => cal[i].load(c.clip, opts.len)); setTimeout(() => cal[0].play(), 250); }
+function endCalib() { cal.forEach(o => o.stop()); R.calib[cs()] = true; loadRate(); }
+$("#calib-go").addEventListener("click", endCalib); $("#calib-skip").addEventListener("click", endCalib);
 function loadRate() {
-  const sec = cs(), list = R.lists[sec], rat = R.ratings[sec], c = list[R.i], nu = nextUnrated(), rated = rat.filter(r => r !== null).length;
+  const sec = cs();
+  if (!R.calib[sec]) return showCalib(sec);
+  $("#calib").classList.add("hidden"); $("#rate-ui").classList.remove("hidden");
+  const list = R.lists[sec], rat = R.ratings[sec], c = list[R.i], nu = nextUnrated(), rated = rat.filter(r => r !== null).length;
   const allDone = R.secs.every(s => !R.ratings[s].includes(null));
   $("#rate-tabs").innerHTML = R.secs.map((s, k) => `<button class="chip${k === R.s ? " on" : ""}${!R.ratings[s].includes(null) ? " done" : ""}" data-s="${k}">${SECTIONS[s].label} · ${R.ratings[s].filter(r => r !== null).length}/${R.ratings[s].length}</button>`).join("");
   $("#rate-prog").textContent = `Guitar ${R.i + 1} of ${list.length} · ${rated} rated`;
