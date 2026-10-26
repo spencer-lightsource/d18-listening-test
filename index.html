@@ -23,6 +23,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23b8382b'/%3E%3Ccircle cx='32' cy='36' r='11' fill='%23111'/%3E%3Crect x='29' y='8' width='6' height='24' rx='2' fill='%23111'/%3E%3C/svg%3E">
 <script>try { const t = localStorage.getItem("d18.theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap">
 <style>
   :root {
@@ -188,7 +189,7 @@
 <body>
 <main>
   <header class="hero">
-    <img src="assets/collection.jpg" alt="" onerror="this.remove()">
+    <img src="assets/hero.jpg" alt="" decoding="async" fetchpriority="high" onerror="this.remove()">
     <div class="tint"></div><div class="grain"></div><div class="fade"></div>
   </header>
   <div class="masthead">
@@ -206,7 +207,7 @@
         <p>Dale Owen had a brilliant idea: commission nearly twenty American luthiers to build the same guitar. A D-18 with an Adirondack spruce top, mahogany back and sides, the same pre-war bracing pattern, and a shade top. For the esteemed builders it was a piece of Americana; for the young ones, a way to reach new players. For years Dale toured with the collection, and he recently decided to pass it on to the next generation.</p>
         <p>In that spirit, this page lets you hear them and decide what sounds good to <em>you</em>. It's a blind taste test: the Pepsi challenge of pre-war style, one-man boutique shops.</p>
         <p class="sig">Enjoy.</p>
-        <img class="story-img" src="assets/collection-row.jpg" alt="The collection lined up on Dale's driveway" onerror="this.remove()">
+        <img class="story-img" src="assets/collection-row-sm.jpg" alt="The collection lined up on Dale's driveway" loading="lazy" decoding="async" onerror="this.remove()">
       </div>
       <div>
         <h2>How it works</h2>
@@ -226,7 +227,7 @@
       <div class="row" style="padding-top:4px"><span class="k">My name</span><input type="text" id="listener" placeholder="So the scorecard is yours" maxlength="40" autocomplete="name"></div>
       <div class="bar" style="align-items:baseline;margin-top:14px"><h2>What to listen to</h2><span class="small muted">We recommend three sections. Any number works. <b id="eta" style="color:var(--ink)"></b></span></div>
       <div class="secgrid" id="secgrid"></div>
-      <div class="links"><a href="#" id="sec-all">Select all</a><a href="#" id="sec-none">Clear</a><span class="muted" id="secnote"></span></div>
+      <div class="links"><span class="muted" id="secnote"></span><a href="#" id="sec-none" class="hidden">Clear</a><a href="#" id="sec-all" class="hidden">Select all</a></div>
       <details class="opts" id="opts">
         <summary><span class="k">Options</span><span class="small muted" id="opts-summary"></span><span class="chev">›</span></summary>
         <div class="row"><span class="k">Clip length</span>
@@ -236,17 +237,17 @@
         <div id="modeinfo" class="hidden modeinfo"></div>
         <div class="row"><span class="k">Blind until the scorecard</span>
           <span class="seg" id="blind"><button data-v="1" class="on">On</button><button data-v="0">Off</button></span></div>
+        <p class="tiny muted keys" style="margin:8px 0 2px">Keyboard: <kbd>space</kbd> play/pause · <kbd>1</kbd>–<kbd>5</kbd> rate · <kbd>←</kbd>/<kbd>→</kbd> pick A/B · <kbd>r</kbd> replay · <kbd>z</kbd> undo</p>
       </details>
       <div class="note">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="13" width="4" height="7" rx="1.5"/><rect x="17" y="13" width="4" height="7" rx="1.5"/></svg>
-        <span><b>Use headphones.</b> Laptop and phone speakers drop the low end and the overtones that set these guitars apart. Keep the volume the same for every clip.</span>
+        <span><b>Use headphones.</b> Phone and laptop speakers hide the low end that sets these guitars apart.</span>
       </div>
       <button class="btn big" id="start">Start listening</button>
     </div>
-    <div class="card" id="history"><div class="bar"><h2 style="margin:0">Past sessions</h2><span class="right"><button class="btn small" id="cmp-open">Compare listeners</button><button class="btn ghost small" id="clear">Clear all</button></span></div><div id="histlist" class="small muted">None yet.</div>
-      <p class="tiny muted" style="margin:12px 0 0">Results live in this browser. To bring in someone else's, open the share link they copied from their scorecard.</p></div>
+    <div class="card" id="history" style="display:none"><div class="bar"><h2 style="margin:0">Past sessions</h2><span class="right"><button class="btn small" id="cmp-open">Compare listeners</button><button class="btn ghost small" id="clear">Clear all</button></span></div><div id="histlist" class="small muted"></div></div>
     <div class="credits">
-      <img src="assets/dales-card.jpg" alt="Dale's Showstoppers Guitars" onerror="this.remove()">
+      <img src="assets/dales-card.jpg" alt="Dale's Showstoppers Guitars" loading="lazy" decoding="async" onerror="this.remove()">
       <div>
         <p class="thanks">With gratitude to Dale Owen, for dreaming up the collection and opening his door to anyone who wants to play it, and to Shawn Brock, for playing every one of these guitars the same way, in the same room, so we could listen fairly.</p>
         <p><b>The guitars</b> belong to the USA Luthier Collection, assembled by Dale Owen of Dale's Showstoppers Guitars in Brevard, North Carolina.</p>
@@ -255,20 +256,19 @@
       </div>
     </div>
     <p class="tiny muted">Appearance: <span class="textseg" id="theme"><button data-v="auto">Auto</button> · <button data-v="light">Light</button> · <button data-v="dark">Dark</button></span></p>
-    <p class="tiny muted keys">Keys: <kbd>space</kbd> play/pause · <kbd>1</kbd>–<kbd>5</kbd> rate · <kbd>←</kbd>/<kbd>→</kbd> pick A/B · <kbd>a</kbd>/<kbd>b</kbd> play A/B · <kbd>r</kbd> replay · <kbd>z</kbd> undo · <kbd>[</kbd>/<kbd>]</kbd> previous/next guitar</p>
+
   </section>
 
   <!-- RATE -->
   <section id="rate" class="hidden">
     <div class="journey"><div class="bar" style="margin:0 0 6px"><span class="small" id="rj-text"></span><span class="small muted" id="rj-pct"></span></div><div class="progress big"><i id="rj-bar"></i></div></div>
     <div class="card">
-      <div class="tabs" id="rate-tabs"></div>
-      <div class="bar"><span class="muted" id="rate-prog"></span>
+      <div class="bar" style="align-items:flex-start"><div class="tabs" id="rate-tabs" style="margin:0"></div>
         <span class="right"><button class="btn ghost small" id="rate-back">← Back</button><button class="btn ghost small" id="rate-quit">Quit</button></span></div>
       <div id="calib" class="hidden center">
         <div class="tiny muted" id="calib-tests"></div>
         <div class="label">Calibrate your ears</div>
-        <p class="small muted" style="max-width:520px;margin:0 auto 14px">Hear three guitars before you score anything, so your first scores aren't guesses. All three come back for scoring later.</p>
+        <p class="small muted" style="max-width:520px;margin:0 auto 14px">Hear three guitars before you score anything, so your first scores aren't guesses. Guitar numbers are reshuffled every session and every section.</p>
         <div class="pair three">
           <div class="card center"><div class="tiny muted">Sample 1</div><button class="play small" id="c1-play">▶</button><div class="progress"><i id="c1-bar"></i></div></div>
           <div class="card center"><div class="tiny muted">Sample 2</div><button class="play small" id="c2-play">▶</button><div class="progress"><i id="c2-bar"></i></div></div>
@@ -285,7 +285,7 @@
         <div class="stars" id="rate-stars"></div>
         <p class="small muted">1 = don't like it · 5 = love it · <button class="linkbtn" id="rate-flag">Something wrong with this clip? Flag it</button></p>
         <div class="strip" id="rate-strip"></div>
-        <p class="tiny muted">Click any guitar above to hear it again and change its score. Scores stay editable on the scorecard.<br>Guitar numbers are reshuffled for every session and every section, so Guitar 7 here is not Guitar 7 elsewhere.</p>
+        <p class="tiny muted">Tap any guitar above to hear it again or change its score.</p>
         <div style="display:flex; gap:10px; justify-content:center; margin-top:12px; flex-wrap:wrap">
           <button class="btn ghost small hidden" id="rate-resume">Resume at next unrated</button>
           <button class="btn small hidden" id="rate-next">Next section →</button>
@@ -381,10 +381,14 @@ const byEp = Object.fromEntries(GUITARS.map(g => [g.ep, g]));
 const clipOf = (ep, sec) => CLIPS.find(c => c.ep === ep && c.section === sec);
 const $ = s => document.querySelector(s);
 const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
-const thumb = ep => `<img class="thumb" src="assets/guitars/${ep}.jpg" alt="" onerror="if(this.src.endsWith('.jpg')){this.src='assets/guitars/${ep}.png'}else{this.remove()}">`;
+const thumb = ep => `<img class="thumb" src="assets/guitars/thumbs/${ep}.jpg" alt="" loading="lazy" decoding="async" onerror="this.remove()">`;
 const store = { get() { try { return JSON.parse(localStorage.getItem("d18.sessions.v2") || "[]"); } catch (e) { return []; } },
                 set(v) { try { localStorage.setItem("d18.sessions.v2", JSON.stringify(v)); } catch (e) {} },
                 save(s) { const all = store.get(); const k = all.findIndex(x => x.id === s.id); if (k >= 0) all[k] = s; else all.push(s); store.set(all); } };
+
+// ---------- prefetch (warms the browser's media cache for the next clip) ----------
+let prefetched = null;
+function prefetch(src) { try { const a = new Audio(); a.preload = "auto"; a.src = encodeURI(src); a.load(); prefetched = a; } catch (e) {} }
 
 // ---------- player ----------
 const PLAYERS = [];   // every player registers here so only one clip can play at a time
@@ -455,7 +459,7 @@ function updateEta() { const m = Math.round(estimateSeconds() / 60); if (!m) { $
   $("#eta").textContent = `About ${m >= 60 ? `${Math.floor(m / 60)} h ${m % 60 ? (m % 60) + " min" : ""}`.trim() : m + " min"}${opts.mode === "tourney" ? " for four rounds" : ""}.`; }
 function renderSecs() { $("#secgrid").innerHTML = ORDER.map(s => `<button class="sec${opts.secs.has(s) ? " on" : ""}" data-s="${s}"><b>${SECTIONS[s].label}</b><span>${SECTIONS[s].tests}</span></button>`).join("");
   const flagged = CLIPS.filter(c => opts.secs.has(c.section) && !["high", "confirmed"].includes(c.conf)).length;
-  $("#secnote").textContent = opts.secs.size ? `${opts.secs.size} section${opts.secs.size > 1 ? "s" : ""} selected` : "Pick at least one section."; updateEta(); }
+  $("#secnote").textContent = opts.secs.size ? `${opts.secs.size} section${opts.secs.size > 1 ? "s" : ""} selected.` : "Pick at least one section."; updateEta(); }
 $("#secgrid").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; opts.secs.has(b.dataset.s) ? opts.secs.delete(b.dataset.s) : opts.secs.add(b.dataset.s); renderSecs(); });
 $("#sec-all").addEventListener("click", e => { e.preventDefault(); ORDER.forEach(s => opts.secs.add(s)); renderSecs(); });
 $("#sec-none").addEventListener("click", e => { e.preventDefault(); opts.secs.clear(); renderSecs(); });
@@ -471,7 +475,7 @@ function show(id) { for (const s of ["setup", "rate", "pair", "round", "results"
   if (id === "setup") window.scrollTo(0, 0); else { const y = $("#" + id).getBoundingClientRect().top + window.scrollY - 12; window.scrollTo({ top: Math.max(0, y), behavior: "smooth" }); } }
 const secList = s => s.sections.map(x => SECTIONS[x].label).join(", ");
 const MODENAME = { rate: "rated 1 to 5", tourney: "head to head", sort: "quick sort" };
-function renderHistory() { const h = store.get(); if (!h.length) { $("#histlist").textContent = "None yet."; return; }
+function renderHistory() { const h = store.get(); $("#history").style.display = h.length ? "" : "none"; $("#cmp-open").style.display = h.length > 1 ? "" : "none"; if (!h.length) { $("#histlist").textContent = ""; return; }
   $("#histlist").innerHTML = h.slice().reverse().map(s => `<div class="bar"><span><b>${s.listener || "Guest"}</b> · ${new Date(s.date).toLocaleString()} · ${secList(s)} · ${MODENAME[s.mode]} · ${s.len ? s.len + " s" : "full"}${s.flags && s.flags.length ? ` · <span class="warn">${s.flags.length} flagged</span>` : ""}</span><button class="btn ghost small" data-id="${s.id}">View</button></div>`).join("");
   $("#cmp-open").disabled = h.length < 2;
   $("#histlist").querySelectorAll("button").forEach(b => b.addEventListener("click", () => showResults(h.find(x => x.id === b.dataset.id)))); }
@@ -526,7 +530,7 @@ function showCalib(sec) {
   journey("rj", R.secs.reduce((t, x) => t + R.ratings[x].filter(r => r !== null).length, 0), R.secs.reduce((t, x) => t + R.ratings[x].length, 0), "clips");
   $("#rate-ui").classList.add("hidden"); $("#calib").classList.remove("hidden"); ratePlayer.stop();
   $("#rate-tabs").innerHTML = R.secs.map((x, k) => `<button class="chip${k === R.s ? " on" : ""}${!R.ratings[x].includes(null) ? " done" : ""}" data-s="${k}">${SECTIONS[x].label} · ${R.ratings[x].filter(r => r !== null).length}/${R.ratings[x].length}</button>`).join("");
-  $("#rate-prog").textContent = `${SECTIONS[sec].label} · calibration`; $("#rate-back").disabled = true;
+  $("#rate-back").disabled = true;
   $("#calib-tests").textContent = `${SECTIONS[sec].label} · ${SECTIONS[sec].tests}. ${SECTIONS[sec].desc}`;
   shuffle(R.lists[sec]).slice(0, 3).forEach((c, i) => cal[i].load(c.clip, opts.len)); setTimeout(() => cal[0].play(), 250); }
 function endCalib() { cal.forEach(o => o.stop()); R.calib[cs()] = true; loadRate(); saveProgress(); }
@@ -550,9 +554,9 @@ function loadRate() {
   const list = R.lists[sec], rat = R.ratings[sec], c = list[R.i], nu = nextUnrated(), rated = rat.filter(r => r !== null).length;
   const allDone = R.secs.every(s => !R.ratings[s].includes(null));
   $("#rate-tabs").innerHTML = R.secs.map((s, k) => `<button class="chip${k === R.s ? " on" : ""}${!R.ratings[s].includes(null) ? " done" : ""}" data-s="${k}">${SECTIONS[s].label} · ${R.ratings[s].filter(r => r !== null).length}/${R.ratings[s].length}</button>`).join("");
-  $("#rate-prog").textContent = `Guitar ${R.i + 1} of ${list.length} · ${rated} rated`;
+
   $("#rate-tests").textContent = `${SECTIONS[sec].label} · ${SECTIONS[sec].tests}. ${SECTIONS[sec].desc}`;
-  $("#rate-label").textContent = gname(c, R.i) + (rat[R.i] !== null ? "  (revisiting)" : "");
+  $("#rate-label").innerHTML = gname(c, R.i) + ` <span class="muted" style="font-size:16px;font-family:Inter,system-ui,sans-serif;font-weight:500">of ${list.length}${rat[R.i] !== null ? " · revisiting" : ""}</span>`;
   const img = $("#rate-img"); img.classList.toggle("hidden", !!opts.blind); if (!opts.blind) { img.src = `assets/guitars/${c.ep}.jpg`; img.onerror = () => img.classList.add("hidden"); }
   $("#rate-stars").querySelectorAll("button").forEach(b => b.classList.toggle("on", +b.dataset.n === rat[R.i]));
   $("#rate-back").disabled = R.i === 0;
@@ -564,6 +568,7 @@ function loadRate() {
     `<button class="chip${k === R.i ? " on" : ""}${rat[k] === null ? " unrated" : ""}" data-k="${k}">${gname(cc, k)}${rat[k] !== null ? " · " + rat[k] : ""}</button>`).join("");
   const fb = $("#rate-flag"); const flagged = R.session.flags.some(f => f.ep === c.ep && f.section === sec); fb.textContent = flagged ? "Flagged. Thanks." : "Something wrong with this clip? Flag it"; fb.classList.toggle("done", flagged);
   ratePlayer.load(c.clip, opts.len); setTimeout(() => ratePlayer.play(), 250);
+  const nxt = list[(R.i + 1) % list.length]; if (nxt) prefetch(nxt.clip);
 }
 function rateCurrent(n) { ratePlayer.stop(); R.ratings[cs()][R.i] = n; saveProgress(); const nu = nextUnrated();
   if (R.secs.every(x => !R.ratings[x].includes(null))) return finishRate();   // last guitar of the last section: straight to the reveal
@@ -631,7 +636,7 @@ function startTourney(secs, saved) {
       T.pairs = pairs; T.k = 0; T.bye = left[0] || null; T.next(); },
     next() { if (T.k >= T.pairs.length) return T.endRound();
       const [a, b] = T.pairs[T.k]; const per = Math.floor(eps.length / 2); journey("pj", T.results.length, Math.max(4, T.round + 1) * per, "matchups");
-      showMatch(T.sec(), a, b, `Round ${T.round + 1} · matchup ${T.k + 1} of ${T.pairs.length} · ${T.results.length} comparisons so far`, T.k > 0); },
+      showMatch(T.sec(), a, b, `Round ${T.round + 1} · matchup ${T.k + 1} of ${T.pairs.length}`, T.k > 0); },
     decide(ch) { pa.stop(); pb.stop(); const [a, b] = T.pairs[T.k]; T.results.push({ a, b, sec: T.sec(), outcome: ch }); T.k++; saveProgress(); T.next(); },
     undo() { if (T.k === 0) return; pa.stop(); pb.stop(); T.results.pop(); T.k--; T.next(); },
     endRound() { const before = T.prevOrder; T.theta = fitBT(eps, T.results); const ord = T.order(); T.prevOrder = ord; T.round++;
@@ -663,7 +668,7 @@ function startSort(secs, saved) {
       if (st.lo >= st.hi) { st.sorted.splice(st.lo, 0, st.order[st.i]); st.i++; st.lo = 0; st.hi = st.sorted.length; return S.next(); }
       st.mid = Math.floor((st.lo + st.hi) / 2); st.flip = Math.random() < .5; const nw = st.order[st.i], old = st.sorted[st.mid]; st.A = st.flip ? old : nw; st.B = st.flip ? nw : old;
       journey("pj", S.done, S.est, "comparisons");
-      showMatch(S.secs[S.s], st.A, st.B, `Comparison ${S.done + 1} of about ${S.est} · section ${S.s + 1} of ${S.secs.length} · ${st.i} of ${st.order.length} guitars placed`, st.hist.length > 0); },
+      showMatch(S.secs[S.s], st.A, st.B, `Comparison ${S.done + 1} of about ${S.est}` + (S.secs.length > 1 ? ` · section ${S.s + 1} of ${S.secs.length}` : ""), st.hist.length > 0); },
     decide(ch) { pa.stop(); pb.stop(); const st = S.st; st.hist.push({ sorted: st.sorted.slice(), i: st.i, lo: st.lo, hi: st.hi, done: S.done }); S.done++;
       const nw = st.order[st.i]; const newWins = ch === "tie" ? null : ((ch === "a") === (st.A === nw));
       if (newWins === null) st.lo = st.hi = st.mid; else if (newWins) st.hi = st.mid; else st.lo = st.mid + 1; saveProgress(); S.next(); },
