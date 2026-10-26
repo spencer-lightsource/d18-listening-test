@@ -232,7 +232,8 @@
     <div class="card" style="padding:14px 20px">
       <div class="bar" style="margin:0"><span><b id="pair-sec"></b> <span class="muted small" id="pair-tests"></span></span>
         <span class="right"><button class="btn ghost small" id="pair-undo">↶ Undo</button><button class="btn ghost small" id="pair-quit">Quit</button></span></div>
-      <div class="small muted" id="pair-prog"></div>
+      <div class="bar" style="margin:6px 0 0"><div class="small muted" id="pair-prog"></div>
+        <span class="seg" id="altseg" title="Alternate plays five seconds of A, the same five seconds of B, then the next five of each"><button data-v="0" class="on">Whole clips</button><button data-v="1">Alternate every 5 s</button></span></div>
     </div>
     <div class="pair">
       <div class="card center"><div class="label" id="pa-label">A</div><button class="play small" id="pa-play">▶</button><div class="progress"><i id="pa-bar"></i></div></div>
@@ -315,19 +316,26 @@ const store = { get() { try { return JSON.parse(localStorage.getItem("d18.sessio
                 save(s) { const all = store.get(); const k = all.findIndex(x => x.id === s.id); if (k >= 0) all[k] = s; else all.push(s); store.set(all); } };
 
 // ---------- player ----------
+const PLAYERS = [];   // every player registers here so only one clip can play at a time
 function makePlayer(btn, bar) {
-  const audio = new Audio(); let limit = 0; let raf = 0;
-  const reset = () => { btn.textContent = "▶"; bar.style.width = "0%"; };
-  const tick = () => { const d = limit || audio.duration || 1; bar.style.width = Math.min(100, 100 * audio.currentTime / d) + "%";
-    if (limit && audio.currentTime >= limit) { audio.pause(); audio.currentTime = 0; reset(); return; }
+  const audio = new Audio(); let limit = 0, denom = 0, raf = 0;
+  const reset = () => { btn.textContent = "▶"; if (!self.hold) bar.style.width = "0%"; };
+  const finished = () => { btn.textContent = "▶"; if (!self.hold) bar.style.width = "0%"; const f = self.onend; self.onend = null; f && f(); };
+  audio.addEventListener("play", () => { for (const o of PLAYERS) if (o.audio !== audio && !o.audio.paused) o.stop(); });
+  const tick = () => { const d = denom || limit || audio.duration || 1; bar.style.width = Math.min(100, 100 * audio.currentTime / d) + "%";
+    if (limit && audio.currentTime >= limit) { audio.pause(); finished(); return; }
     if (!audio.paused) raf = requestAnimationFrame(tick); };
-  audio.addEventListener("ended", reset);
+  audio.addEventListener("ended", finished);
   audio.addEventListener("play", () => { btn.textContent = "❚❚"; cancelAnimationFrame(raf); raf = requestAnimationFrame(tick); });
   audio.addEventListener("pause", () => { if (audio.currentTime > 0 && !audio.ended) btn.textContent = "▶"; });
   btn.addEventListener("click", () => audio.paused ? audio.play() : audio.pause());
-  return { load(src, lim) { audio.src = encodeURI(src); limit = lim; audio.currentTime = 0; reset(); },
-           play() { audio.currentTime = 0; audio.play().catch(() => {}); }, stop() { audio.pause(); audio.currentTime = 0; reset(); },
+  const self = { audio, onend: null, hold: false,
+           load(src, lim) { audio.src = encodeURI(src); limit = lim; denom = 0; self.hold = false; self.onend = null; audio.currentTime = 0; reset(); },
+           play() { denom = 0; self.hold = false; self.onend = null; audio.currentTime = 0; audio.play().catch(() => {}); },
+           playFrom(t, until, total) { limit = until; denom = total; audio.currentTime = t; audio.play().catch(() => {}); },
+           stop() { self.hold = false; self.onend = null; audio.pause(); audio.currentTime = 0; reset(); },
            toggle() { audio.paused ? audio.play().catch(() => {}) : audio.pause(); }, get playing() { return !audio.paused; } };
+  PLAYERS.push(self); return self;
 }
 
 // ---------- setup ----------
@@ -395,7 +403,6 @@ function startRate(secs) { R = { session: newSession("rate", secs), secs, s: 0, 
 function gotoRate(k) { if (k < 0 || k >= R.lists[cs()].length) return; ratePlayer.stop(); R.i = k; loadRate(); }
 function gotoSection(s) { if (s < 0 || s >= R.secs.length) return; ratePlayer.stop(); R.s = s; const nu = nextUnrated(); R.i = nu === -1 ? 0 : nu; loadRate(); }
 const cal = [1, 2, 3].map(n => makePlayer($(`#c${n}-play`), $(`#c${n}-bar`)));
-cal.forEach((pl, i) => $(`#c${i + 1}-play`).addEventListener("click", () => cal.forEach((o, j) => j !== i && o.stop()), true));
 function showCalib(sec) {
   $("#rate-ui").classList.add("hidden"); $("#calib").classList.remove("hidden"); ratePlayer.stop();
   $("#rate-tabs").innerHTML = R.secs.map((x, k) => `<button class="chip${k === R.s ? " on" : ""}${!R.ratings[x].includes(null) ? " done" : ""}" data-s="${k}">${SECTIONS[x].label} · ${R.ratings[x].filter(r => r !== null).length}/${R.ratings[x].length}</button>`).join("");
@@ -441,11 +448,25 @@ const pa = makePlayer($("#pa-play"), $("#pa-bar")), pb = makePlayer($("#pb-play"
 $("#pick-a").addEventListener("click", () => P && P.decide("a")); $("#pick-b").addEventListener("click", () => P && P.decide("b")); $("#pick-tie").addEventListener("click", () => P && P.decide("tie"));
 $("#pair-quit").addEventListener("click", () => { pa.stop(); pb.stop(); show("setup"); });
 $("#pair-undo").addEventListener("click", () => P && P.undo());
+const alt = { on: false, seg: 5, running: false };
+try { alt.on = localStorage.getItem("d18.alt") === "1"; } catch (e) {}
+$("#altseg").querySelectorAll("button").forEach(b => b.classList.toggle("on", +b.dataset.v === +alt.on));
+$("#altseg").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; alt.on = b.dataset.v === "1";
+  [...e.currentTarget.children].forEach(x => x.classList.toggle("on", x === b)); try { localStorage.setItem("d18.alt", alt.on ? "1" : "0"); } catch (err) {}
+  pa.stop(); pb.stop(); alt.running = false; alt.on ? altStart() : pa.play(); });
+function altStart() {
+  const L = opts.len || Math.min(pa.audio.duration || 30, pb.audio.duration || 30); let t = 0, side = 0; alt.running = true;
+  pa.stop(); pb.stop(); pa.hold = pb.hold = true;
+  const step = () => { if (!alt.running) return; if (t >= L) { alt.running = false; pa.hold = pb.hold = false; pa.stop(); pb.stop(); return; }
+    const pl = side ? pb : pa; pl.onend = () => { if (side) t += alt.seg; side ^= 1; step(); }; pl.playFrom(t, Math.min(t + alt.seg, L), L); };
+  step(); }
+for (const b of [$("#pa-play"), $("#pb-play")]) b.addEventListener("click", () => { if (alt.running) { alt.running = false; pa.hold = pb.hold = false; pa.onend = pb.onend = null; } }, true);
 function showMatch(sec, epA, epB, progText, canUndo) {
+  alt.running = false;
   $("#pair-sec").textContent = SECTIONS[sec].label; $("#pair-tests").textContent = `${SECTIONS[sec].tests}. ${SECTIONS[sec].desc}`;
   $("#pair-prog").textContent = progText; $("#pair-undo").disabled = !canUndo;
   $("#pa-label").textContent = opts.blind ? "A" : byEp[epA].guitar; $("#pb-label").textContent = opts.blind ? "B" : byEp[epB].guitar;
-  pa.load(clipOf(epA, sec).clip, opts.len); pb.load(clipOf(epB, sec).clip, opts.len); show("pair"); setTimeout(() => pa.play(), 250); }
+  pa.load(clipOf(epA, sec).clip, opts.len); pb.load(clipOf(epB, sec).clip, opts.len); show("pair"); setTimeout(() => alt.on ? altStart() : pa.play(), 250); }
 
 // ---------- Bradley-Terry fit (Hunter 2004 MM) with ties as half wins and a light prior ----------
 function fitBT(eps, results) {
@@ -627,7 +648,7 @@ function renderCompare() {
 document.addEventListener("keydown", e => { if (/INPUT|SELECT|TEXTAREA/.test(e.target.tagName)) return;
   const inRate = !$("#rate").classList.contains("hidden"), inPair = !$("#pair").classList.contains("hidden");
   if (e.code === "Space") { e.preventDefault(); if (inRate) ratePlayer.toggle(); if (inPair) (pb.playing ? pb : pa).toggle(); }
-  if (e.key === "r") { if (inRate) ratePlayer.play(); if (inPair) pa.play(); }
+  if (e.key === "r") { if (inRate) ratePlayer.play(); if (inPair) (alt.on ? altStart() : pa.play()); }
   if (inRate && /^[1-5]$/.test(e.key)) rateCurrent(+e.key);
   if (inRate && e.key === "[") gotoRate(R.i - 1); if (inRate && e.key === "]") gotoRate(R.i + 1);
   if (inPair && e.key === "ArrowLeft") P.decide("a"); if (inPair && e.key === "ArrowRight") P.decide("b");
