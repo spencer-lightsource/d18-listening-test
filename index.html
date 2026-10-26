@@ -49,6 +49,7 @@
   .story p { margin: 0 0 12px; font-size: 15.5px; line-height: 1.6; }
   .story p:last-child { margin-bottom: 0; }
   .story .sig { font-family: Fraunces, Georgia, serif; font-style: italic; font-size: 17px; color: var(--muted); }
+  .story-img { width: 100%; border-radius: 10px; margin-top: 16px; display: block; }
   details.more { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin: 4px 0 18px; }
   details.more summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 14px; padding: 13px 0; }
   details.more summary::-webkit-details-marker { display: none; }
@@ -73,7 +74,7 @@
   .top1 { color: var(--accent); font-weight: 700; }
   .winner { text-align: center; padding: 6px 0 20px; border-bottom: 1px solid var(--line); margin-bottom: 16px; }
   .winner .label { font-size: 34px; margin: 4px 0 6px; }
-  .winner img { height: 150px; border-radius: 8px; display: block; margin: 0 auto 10px; }
+  .winner img { height: 190px; max-width: 100%; object-fit: cover; border-radius: 10px; display: block; margin: 8px auto 12px; box-shadow: 0 6px 24px rgba(0,0,0,.25); }
   .btn { background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 8px; padding: 11px 18px; font: inherit; font-weight: 600; cursor: pointer; }
   .btn.ghost { background: var(--soft); color: var(--ink); }
   .btn.big { font-size: 16px; padding: 15px 22px; width: 100%; margin-top: 6px; }
@@ -171,6 +172,7 @@
         <p>Dale Owen had a brilliant idea: commission nearly twenty American luthiers to build the same guitar. A D-18 with an Adirondack spruce top, mahogany back and sides, the same pre-war bracing pattern, and a shade top. For the esteemed builders it was a piece of Americana; for the young ones, a way to reach new players. For years Dale toured with the collection, and he recently decided to pass it on to the next generation.</p>
         <p>In that spirit, this page lets you hear them and decide what sounds good to <em>you</em>. It's a blind taste test: the Pepsi challenge of pre-war style, one-man boutique shops.</p>
         <p class="sig">Enjoy.</p>
+        <img class="story-img" src="assets/collection-row.jpg" alt="The collection lined up on Dale's driveway" onerror="this.remove()">
       </div>
       <div>
         <h2>How it works</h2>
@@ -299,6 +301,7 @@
     <div class="card">
       <div id="res-win" class="winner hidden">
         <div class="eyebrow" id="win-eyebrow">Congrats</div>
+        <img id="win-img" class="hidden" alt="">
         <div class="label" id="win-title"></div>
         <p class="small muted" id="win-sub" style="margin:0 0 12px"></p>
         <button class="btn small" id="win-play">▶ Hear the winner</button>
@@ -598,6 +601,7 @@ function confetti() {
 function showResults(s, celebrate = false) { current = s; show("results"); resPlayer.stop();
   const secs = s.sections, multi = secs.length > 1;
   const w = s.rows[0]; $("#res-win").classList.remove("hidden");
+  const wi = $("#win-img"); wi.classList.add("hidden"); wi.onload = () => wi.classList.remove("hidden"); wi.onerror = () => wi.classList.add("hidden"); wi.src = `assets/guitars/${w.ep}.jpg`;
   $("#win-eyebrow").textContent = celebrate ? `Congrats, ${s.listener || "listener"}!` : `${s.listener || "Guest"}'s top pick`;
   $("#win-title").innerHTML = `${celebrate ? "Your ears chose " : ""}${w.guitar}`;
   $("#win-sub").textContent = winnerText(s);
