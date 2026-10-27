@@ -413,14 +413,14 @@ const CLIPS = [{"ep": "01", "guitar": "Judge Wolfe", "section": "intro", "clip":
 
 // What each section tests. Edit freely; the key must match the clip folder's section name.
 const SECTIONS = {
-  intro:      { label: "Intro",       tests: "Overall voice",            desc: "The opening pass. First impression of the whole guitar." },
-  bass:       { label: "Bass",        tests: "Low end",                  desc: "Depth, punch and clarity of the bass strings." },
-  ballad:     { label: "Ballad",      tests: "Sustain and sweetness",    desc: "A slow old-time ballad. Note bloom, decay and warmth." },
-  keyA:       { label: "Key of A",    tests: "Open-chord drive",         desc: "Rhythm in A. Projection, headroom and chord separation." },
-  wildflower: { label: "Flatpick Noodling", tests: "Single-note clarity", desc: "Flatpicked lines in the same key, right after the rhythm. Note definition and attack." },
-  bflat:      { label: "B-flat",      tests: "Capo'd voice, low",        desc: "Capo on, in B-flat. Mids and balance with the capo." },
-  keyB:       { label: "Key of B",    tests: "Capo'd voice, higher",     desc: "Capo on, in B. Treble balance and evenness." },
-  fifth:      { label: "Fifth fret",  tests: "Up the neck",              desc: "Capo at the fifth fret. High-register clarity and sparkle." },
+  intro:      { label: "All-Around Flatpicking", tests: "Overall voice",           desc: "The opening pass. First impression of the whole guitar." },
+  bass:       { label: "Bass",                   tests: "Low end",                 desc: "Depth, punch and clarity of the bass strings." },
+  ballad:     { label: "Ballad",                 tests: "Sustain and sweetness",   desc: "A slow old-time ballad. Note bloom, decay and warmth." },
+  keyA:       { label: "Country Strumming",      tests: "Capo 2nd fret",           desc: "Rhythm in A with the capo on the second fret. Projection, headroom and chord separation." },
+  wildflower: { label: "Flatpick Noodling",      tests: "Capo 2nd fret",           desc: "Flatpicked lines in the same position, right after the rhythm. Note definition and attack." },
+  bflat:      { label: "Strumming in B-flat",    tests: "Capo 3rd fret",           desc: "Strumming in B-flat with the capo on the third fret. Mids and balance." },
+  keyB:       { label: "Ethereal Modern",        tests: "Key of B, capo 4th fret", desc: "A modern, airy piece in B with the capo on the fourth fret. Treble balance and evenness." },
+  fifth:      { label: "Gentle Strumming",       tests: "Capo 5th fret",           desc: "Soft strumming with the capo at the fifth fret. High-register clarity and sparkle." },
 };
 const ORDER = Object.keys(SECTIONS).filter(s => CLIPS.some(c => c.section === s));
 const GUITARS = [...new Map(CLIPS.map(c => [c.ep, { ep: c.ep, guitar: c.guitar }])).values()].sort((a, b) => a.ep.localeCompare(b.ep));
