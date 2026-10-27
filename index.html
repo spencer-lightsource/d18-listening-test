@@ -112,9 +112,20 @@
   .hoverpic img { height: 300px; border-radius: 10px; box-shadow: 0 12px 40px rgba(0,0,0,.45); background: var(--card); }
   .thumb { cursor: zoom-in; }
   .gname { cursor: pointer; } .gname:hover { text-decoration: underline; text-underline-offset: 3px; }
-  tr.listen-row td { background: var(--soft); padding: 10px 12px; white-space: normal; }
-  tr.listen-row .chips { display: flex; flex-wrap: wrap; gap: 6px; }
-  tr.listen-row .chip.on { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  tr.listen-row td { background: var(--soft); padding: 8px 10px; white-space: normal; }
+  .scroll table tr.listen-row td:first-child { position: static; width: auto; min-width: 0; max-width: none; box-shadow: none; }
+  .dhead { display: flex; align-items: center; gap: 10px; padding: 2px 6px 8px; border-bottom: 1px solid var(--line); margin-bottom: 6px; }
+  .dname { font-family: Fraunces, Georgia, serif; font-size: 18px; font-weight: 500; }
+  .dclose { margin-left: auto; }
+  @media (max-width: 640px) { .dhead .tiny { display: none; } }
+  .detail { display: grid; gap: 2px; }
+  .drow { display: grid; grid-template-columns: 36px 1fr auto; align-items: center; gap: 12px; padding: 5px 6px; border-radius: 8px; }
+  .drow.focus { background: var(--card); }
+  .dplay { width: 34px; height: 34px; border-radius: 50%; border: 0; background: var(--ink); color: var(--bg); cursor: pointer; font-size: 12px; }
+  .dplay.on { background: var(--accent); color: var(--accent-ink); }
+  .dlabel { display: flex; flex-direction: column; line-height: 1.2; min-width: 0; } .dlabel b { font-size: 14px; } .dlabel span { font-size: 12px; color: var(--muted); }
+  .dscore { white-space: nowrap; }
+  @media (max-width: 640px) { .drow { grid-template-columns: 34px 1fr; row-gap: 6px; } .dscore { grid-column: 2; } }
   .winner { text-align: center; padding: 6px 0 20px; border-bottom: 1px solid var(--line); margin-bottom: 16px; }
   .winner .label { font-size: 34px; margin: 4px 0 6px; }
   .winner img { height: 190px; max-width: 100%; object-fit: cover; border-radius: 10px; display: block; margin: 8px auto 12px; box-shadow: 0 6px 24px rgba(0,0,0,.25); }
@@ -821,16 +832,21 @@ function showResults(s, celebrate = false) { current = s; show("results"); resPl
   if (s.flags && s.flags.length) $("#res-hint").innerHTML += `<br><span class="warn">Flagged clip${s.flags.length > 1 ? "s" : ""}: ${s.flags.map(f => `${f.guitar} (${SECTIONS[f.section] ? SECTIONS[f.section].label : f.section}${f.reason ? ": " + f.reason : ""})`).join(", ")}.</span>`;
   $("#res-report").classList.toggle("hidden", !(s.flags && s.flags.length));
   const ncols = $("#res-table tr").children.length;
-  function openDetail(ep, editSec) { const row = $(`#res-table tr[data-ep="${ep}"]`); const existing = $("#res-table tr.listen-row"); const same = existing && existing.dataset.ep === ep && existing.dataset.sec === (editSec || "");
+  function openDetail(ep, focusSec) { const row = $(`#res-table tr[data-ep="${ep}"]`); const existing = $("#res-table tr.listen-row"); const same = existing && existing.dataset.ep === ep && !focusSec;
     if (existing) existing.remove(); resPlayer.stop(); if (same) return;
-    const tr = document.createElement("tr"); tr.className = "listen-row"; tr.dataset.ep = ep; tr.dataset.sec = editSec || "";
-    const r = s.rows.find(x => x.ep === ep);
-    const editor = (s.mode === "rate" && editSec) ? `<div style="margin-bottom:10px"><span class="small">Your score for <b>${SECTIONS[editSec].label}</b>:</span> <span class="mini" style="margin-left:6px">${[1,2,3,4,5].map(n => `<button data-ep="${ep}" data-sec="${editSec}" data-n="${n}" class="${r.scores[editSec] === n ? "on" : ""}">${n}</button>`).join("")}</span></div>` : "";
-    tr.innerHTML = `<td colspan="${ncols}">${editor}<div class="chips">${ORDER.map(x => `<button class="chip${x === editSec ? " on" : ""}" data-lp="${ep}|${x}">▶ ${SECTIONS[x].label}</button>`).join("")}</div></td>`; row.after(tr);
-    const playChip = b => { const [e2, sec] = b.dataset.lp.split("|"); tr.querySelectorAll(".chip").forEach(x => x.classList.remove("on")); resPlayer.load(clipOf(e2, sec).clip, editSec ? s.len : 0); resPlayer.play(); b.classList.add("on"); resPlayer.onend = () => b.classList.remove("on"); };
-    tr.querySelectorAll("button[data-lp]").forEach(b => b.addEventListener("click", () => { if (b.classList.contains("on")) { resPlayer.stop(); b.classList.remove("on"); } else playChip(b); }));
-    tr.querySelectorAll(".mini button").forEach(b => b.addEventListener("click", () => { r.scores[b.dataset.sec] = +b.dataset.n; rankRate(s); store.save(s); renderHistory(); showResults(s); openDetail(ep, b.dataset.sec); }));
-    if (editSec) { const chip = tr.querySelector(`button[data-lp="${ep}|${editSec}"]`); if (chip) playChip(chip); } }
+    const tr = document.createElement("tr"); tr.className = "listen-row"; tr.dataset.ep = ep;
+    const r = s.rows.find(x => x.ep === ep); const inSession = x => s.sections.includes(x);
+    const right = x => s.mode === "rate" && inSession(x) ? `<span class="mini">${[1,2,3,4,5].map(n => `<button data-ep="${ep}" data-sec="${x}" data-n="${n}" class="${r.scores[x] === n ? "on" : ""}">${n}</button>`).join("")}</span>`
+      : s.mode === "tourney" && inSession(x) && r.secrec && r.secrec[x] ? `<span class="small muted">${r.secrec[x].w}-${r.secrec[x].l}-${r.secrec[x].t}</span>`
+      : s.mode === "sort" && inSession(x) && r.ranks ? `<span class="small muted">rank ${r.ranks[x]}</span>` : `<span class="tiny muted">not in this session</span>`;
+    tr.innerHTML = `<td colspan="${ncols}"><div class="dhead"><span class="dname">${r.guitar}</span><span class="tiny muted">${s.mode === "rate" ? "Play any section. Change a score and the table re-sorts." : "Play any section."}</span><button class="btn ghost small dclose" title="Close">✕ Close</button></div><div class="detail">${ORDER.map(x => `<div class="drow${x === focusSec ? " focus" : ""}"><button class="dplay" data-lp="${ep}|${x}" title="Play">▶</button><div class="dlabel"><b>${SECTIONS[x].label}</b><span>${SECTIONS[x].tests}</span></div><div class="dscore">${right(x)}</div></div>`).join("")}</div></td>`;
+    row.after(tr);
+    tr.querySelector(".dclose").addEventListener("click", () => { resPlayer.stop(); tr.remove(); });
+    const resetBtns = () => tr.querySelectorAll(".dplay").forEach(x => { x.classList.remove("on"); x.textContent = "▶"; });
+    const play = b => { const [e2, sec] = b.dataset.lp.split("|"); resetBtns(); resPlayer.load(clipOf(e2, sec).clip, 0); resPlayer.play(); b.classList.add("on"); b.textContent = "❚❚"; resPlayer.onend = resetBtns; };
+    tr.querySelectorAll(".dplay").forEach(b => b.addEventListener("click", () => { if (b.classList.contains("on")) { resPlayer.stop(); resetBtns(); } else play(b); }));
+    tr.querySelectorAll(".mini button").forEach(b => b.addEventListener("click", () => { r.scores[b.dataset.sec] = +b.dataset.n; rankRate(s); store.save(s); renderHistory(); showResults(s); openDetail(ep, null); const t2 = $("#res-table tr.listen-row"); if (t2) t2.scrollIntoView({ block: "nearest" }); }));
+    if (focusSec) { const b = tr.querySelector(`.dplay[data-lp="${ep}|${focusSec}"]`); if (b) play(b); } }
   $("#res-table").querySelectorAll(".gname").forEach(el => el.addEventListener("click", e => { if (e.target.classList.contains("thumb")) return; openDetail(el.dataset.ep, null); }));
   $("#res-table").querySelectorAll("button[data-edit]").forEach(b => b.addEventListener("click", () => { const [ep, sec] = b.dataset.edit.split("|"); openDetail(ep, sec); }));
   $("#res-table").querySelectorAll("img.thumb").forEach(img => { const ep = img.closest("[data-ep]").dataset.ep; img.addEventListener("click", e => { e.stopPropagation(); showLightbox(ep); });
