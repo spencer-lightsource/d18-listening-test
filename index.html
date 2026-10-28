@@ -111,7 +111,7 @@
   .hoverpic { position: fixed; z-index: 55; pointer-events: none; }
   .hoverpic img { height: 300px; border-radius: 10px; box-shadow: 0 12px 40px rgba(0,0,0,.45); background: var(--card); }
   .thumb { cursor: zoom-in; }
-  .gname { cursor: pointer; } .gname:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .gname { cursor: pointer; display: flex; align-items: center; gap: 8px; } .gname .thumb { margin-right: 0; flex: none; } .gname .gtext { min-width: 0; } .gname:hover .gtext { text-decoration: underline; text-underline-offset: 3px; }
   tr.listen-row td { background: var(--soft); padding: 8px 10px; white-space: normal; }
   .scroll table tr.listen-row td:first-child { position: static; width: auto; min-width: 0; max-width: none; box-shadow: none; }
   .dhead { display: flex; align-items: center; gap: 10px; padding: 2px 6px 8px; border-bottom: 1px solid var(--line); margin-bottom: 6px; }
@@ -821,16 +821,16 @@ function showResults(s, celebrate = false) { current = s; show("results"); resPl
   let head, body;
   if (s.mode === "rate") {
     head = `<th>#</th><th>Guitar</th>${secs.map(x => `<th class="num" title="${SECTIONS[x].label}">${SECTIONS[x].short}</th>`).join("")}${multi ? `<th class="num">Avg</th>` : ""}`;
-    body = s.rows.map(r => `<tr data-ep="${r.ep}"><td class="num">${r.rank}</td><td><span class="gname" data-ep="${r.ep}">${thumb(r.ep)}${r.guitar}</span></td>${secs.map(x => `<td class="num score heat-${r.scores[x] ?? 3}"><button data-edit="${r.ep}|${x}" title="Replay and change">${r.scores[x] ?? "–"}</button></td>`).join("")}${multi ? `<td class="num heat-${Math.max(1, Math.min(5, Math.round(r.avg)))}"><b>${r.avg.toFixed(2)}</b></td>` : ""}</tr>`).join("");
+    body = s.rows.map(r => `<tr data-ep="${r.ep}"><td class="num">${r.rank}</td><td><span class="gname" data-ep="${r.ep}">${thumb(r.ep)}<span class="gtext">${r.guitar}</span></span></td>${secs.map(x => `<td class="num score heat-${r.scores[x] ?? 3}"><button data-edit="${r.ep}|${x}" title="Replay and change">${r.scores[x] ?? "–"}</button></td>`).join("")}${multi ? `<td class="num heat-${Math.max(1, Math.min(5, Math.round(r.avg)))}"><b>${r.avg.toFixed(2)}</b></td>` : ""}</tr>`).join("");
     $("#res-hint").textContent = "Tap a score to replay that clip and change it. Tap a name to hear any of that guitar's clips.";
   } else if (s.mode === "tourney") {
     head = `<th>#</th><th>Guitar</th><th class="num" title="Bradley-Terry: chance of beating an average guitar in the set">Beats avg.</th><th class="num">W-L-T</th>${multi ? secs.map(x => `<th class="num" title="${SECTIONS[x].label}">${SECTIONS[x].short}</th>`).join("") : ""}`;
-    body = s.rows.map(r => `<tr data-ep="${r.ep}"><td class="num">${r.rank}</td><td><span class="gname" data-ep="${r.ep}">${thumb(r.ep)}${r.guitar}</span></td><td class="num heat-${r.winp < .3 ? 1 : r.winp < .45 ? 2 : r.winp < .55 ? 3 : r.winp < .7 ? 4 : 5}"><b>${Math.round(100 * r.winp)}%</b></td><td class="num">${r.rec.w}-${r.rec.l}-${r.rec.t}</td>${multi ? secs.map(x => `<td class="num">${r.secrec[x].w}-${r.secrec[x].l}-${r.secrec[x].t}</td>`).join("") : ""}</tr>`).join("");
+    body = s.rows.map(r => `<tr data-ep="${r.ep}"><td class="num">${r.rank}</td><td><span class="gname" data-ep="${r.ep}">${thumb(r.ep)}<span class="gtext">${r.guitar}</span></span></td><td class="num heat-${r.winp < .3 ? 1 : r.winp < .45 ? 2 : r.winp < .55 ? 3 : r.winp < .7 ? 4 : 5}"><b>${Math.round(100 * r.winp)}%</b></td><td class="num">${r.rec.w}-${r.rec.l}-${r.rec.t}</td>${multi ? secs.map(x => `<td class="num">${r.secrec[x].w}-${r.secrec[x].l}-${r.secrec[x].t}</td>`).join("") : ""}</tr>`).join("");
     $("#res-hint").textContent = "Beats avg. is the fitted Bradley-Terry strength expressed as the chance of winning a matchup against an average guitar in this set. Tap a guitar's name to listen to any of its clips.";
   } else {
     head = `<th>#</th><th>Guitar</th>${secs.map(x => `<th class="num" title="${SECTIONS[x].label}">${SECTIONS[x].short}</th>`).join("")}${multi ? `<th class="num">Mean</th>` : ""}`;
     const hb = rk => rk <= 3 ? 5 : rk <= 7 ? 4 : rk <= 11 ? 3 : rk <= 15 ? 2 : 1;
-    body = s.rows.map(r => `<tr data-ep="${r.ep}"><td class="num">${r.rank}</td><td><span class="gname" data-ep="${r.ep}">${thumb(r.ep)}${r.guitar}</span></td>${secs.map(x => `<td class="num heat-${hb(r.ranks[x])}">${r.ranks[x]}</td>`).join("")}${multi ? `<td class="num heat-${hb(r.rank)}"><b>${r.meanRank.toFixed(1)}</b></td>` : ""}</tr>`).join("");
+    body = s.rows.map(r => `<tr data-ep="${r.ep}"><td class="num">${r.rank}</td><td><span class="gname" data-ep="${r.ep}">${thumb(r.ep)}<span class="gtext">${r.guitar}</span></span></td>${secs.map(x => `<td class="num heat-${hb(r.ranks[x])}">${r.ranks[x]}</td>`).join("")}${multi ? `<td class="num heat-${hb(r.rank)}"><b>${r.meanRank.toFixed(1)}</b></td>` : ""}</tr>`).join("");
     $("#res-hint").textContent = (multi ? "Per-section rank from each sort, averaged. " : "") + "Tap a guitar's name to listen to any of its clips.";
   }
   $("#res-table").innerHTML = `<tr>${head}</tr>${body}`;
