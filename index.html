@@ -865,12 +865,15 @@ $("#lightbox").addEventListener("click", () => $("#lightbox").classList.add("hid
 document.addEventListener("keydown", e => { if (e.key === "Escape") $("#lightbox").classList.add("hidden"); });
 $("#res-home").addEventListener("click", () => { resPlayer.stop(); editing = null; showResume(); show("setup"); });
 $("#res-export").addEventListener("click", () => { const s = current, secs = s.sections; let cols, rows;
-  if (s.mode === "rate") { cols = ["rank", "ep", "guitar", ...secs, "average"]; rows = s.rows.map(r => [r.rank, r.ep, r.guitar, ...secs.map(x => r.scores[x] ?? ""), r.avg.toFixed(2)]); }
-  else if (s.mode === "tourney") { cols = ["rank", "ep", "guitar", "beats_avg_pct", "strength", "wins", "losses", "ties", ...secs.map(x => x + "_wlt")]; rows = s.rows.map(r => [r.rank, r.ep, r.guitar, Math.round(100 * r.winp), r.strength.toFixed(3), r.rec.w, r.rec.l, r.rec.t, ...secs.map(x => `${r.secrec[x].w}-${r.secrec[x].l}-${r.secrec[x].t}`)]); }
-  else { cols = ["rank", "ep", "guitar", ...secs.map(x => x + "_rank"), "mean_rank"]; rows = s.rows.map(r => [r.rank, r.ep, r.guitar, ...secs.map(x => r.ranks[x]), r.meanRank.toFixed(2)]); }
-  if (s.flags && s.flags.length) { rows.push([]); rows.push(["flagged clips", "", "", "reason", "note"]); for (const f of s.flags) rows.push([f.guitar, f.ep, f.section, f.reason || "", f.note || ""]); }
+  const L = x => SECTIONS[x] ? SECTIONS[x].label : x;
+  if (s.mode === "rate") { cols = ["Rank", "Episode", "Guitar", ...secs.map(L), "Average"]; rows = s.rows.map(r => [r.rank, r.ep, r.guitar, ...secs.map(x => r.scores[x] ?? ""), r.avg.toFixed(2)]); }
+  else if (s.mode === "tourney") { cols = ["Rank", "Episode", "Guitar", "Beats average %", "Strength", "Wins", "Losses", "Ties", ...secs.map(x => L(x) + " W-L-T")]; rows = s.rows.map(r => [r.rank, r.ep, r.guitar, Math.round(100 * r.winp), r.strength.toFixed(3), r.rec.w, r.rec.l, r.rec.t, ...secs.map(x => `${r.secrec[x].w}-${r.secrec[x].l}-${r.secrec[x].t}`)]); }
+  else { cols = ["Rank", "Episode", "Guitar", ...secs.map(x => L(x) + " rank"), "Mean rank"]; rows = s.rows.map(r => [r.rank, r.ep, r.guitar, ...secs.map(x => r.ranks[x]), r.meanRank.toFixed(2)]); }
+  rows.push([]); rows.push(["Listener", s.listener || "Guest"]); rows.push(["Date", s.date]); rows.push(["Mode", MODENAME[s.mode]]); rows.push(["Clip length", s.len ? s.len + " s" : "full"]);
+  if (s.flags && s.flags.length) { rows.push([]); rows.push(["Flagged clips", "Episode", "Section", "Reason", "Note"]); for (const f of s.flags) rows.push([f.guitar, f.ep, L(f.section), f.reason || "", f.note || ""]); }
   const csv = [cols.join(","), ...rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(","))].join("\n");
-  const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" })); a.download = `d18-${s.mode}-${secs.join("+")}-${s.date.slice(0, 10)}.csv`; a.click(); });
+  const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" })); const who = (s.listener || "guest").replace(/[^a-z0-9]+/gi, "-").toLowerCase(); const what = secs.length > 3 ? `${secs.length}-sections` : secs.map(x => (SECTIONS[x] ? SECTIONS[x].short : x).toLowerCase().replace(/[^a-z0-9]+/g, "")).join("+");
+  a.download = `d18-${who}-${MODENAME[s.mode].replace(/[^a-z0-9]+/gi, "-")}-${what}-${s.date.slice(0, 10)}.csv`; a.click(); });
 
 // ---------- share link: the whole session packed into the URL hash ----------
 function encodeSession(s) {
