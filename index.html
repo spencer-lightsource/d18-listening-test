@@ -184,7 +184,11 @@
   th { font-size: 11px; color: var(--muted); font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
   td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
   td.score button, .cellbtn { background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 4px 9px; cursor: pointer; font: inherit; font-size: 13px; color: var(--ink); }
-  .thumb { width: 34px; height: 44px; object-fit: cover; border-radius: 4px; vertical-align: middle; margin-right: 8px; background: var(--soft); filter: grayscale(1); }
+  .thumb { width: 30px; height: 40px; object-fit: cover; border-radius: 4px; vertical-align: middle; margin-right: 8px; background: var(--soft); filter: grayscale(1); }
+  #res-table td.score, #res-table th.num { padding-left: 5px; padding-right: 5px; }
+  #res-table td.score button { padding: 3px 7px; min-width: 28px; }
+  #res-table td:nth-child(2) { white-space: normal; min-width: 150px; line-height: 1.25; }
+  .dpanel { position: sticky; left: 0; box-sizing: border-box; }
   .pill { display: inline-block; padding: 1px 7px; border-radius: 4px; background: var(--soft); font-size: 11px; color: var(--muted); letter-spacing: .04em; }
   .bar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 10px; margin-bottom: 8px; }
   .bar .right { display: flex; gap: 6px; }
@@ -424,14 +428,14 @@ const CLIPS = [{"ep": "01", "guitar": "Judge Wolfe", "section": "intro", "clip":
 
 // What each section tests. Edit freely; the key must match the clip folder's section name.
 const SECTIONS = {
-  intro:      { label: "All-Around Flatpicking", tests: "Overall voice",           desc: "The opening pass. First impression of the whole guitar." },
-  bass:       { label: "Bass",                   tests: "Low end",                 desc: "Depth, punch and clarity of the bass strings." },
-  ballad:     { label: "Ballad",                 tests: "Sustain and sweetness",   desc: "A slow old-time ballad. Note bloom, decay and warmth." },
-  keyA:       { label: "Country Strumming",      tests: "Capo 2nd fret",           desc: "Rhythm in A with the capo on the second fret. Projection, headroom and chord separation." },
-  wildflower: { label: "Flatpick Noodling",      tests: "Capo 2nd fret",           desc: "Flatpicked lines in the same position, right after the rhythm. Note definition and attack." },
-  bflat:      { label: "Strumming in B-flat",    tests: "Capo 3rd fret",           desc: "Strumming in B-flat with the capo on the third fret. Mids and balance." },
-  keyB:       { label: "Ethereal Modern",        tests: "Key of B, capo 4th fret", desc: "A modern, airy piece in B with the capo on the fourth fret. Treble balance and evenness." },
-  fifth:      { label: "Gentle Strumming",       tests: "Capo 5th fret",           desc: "Soft strumming with the capo at the fifth fret. High-register clarity and sparkle." },
+  intro:      { label: "All-Around Flatpicking", short: "Flatpicking", tests: "Overall voice",           desc: "The opening pass. First impression of the whole guitar." },
+  bass:       { label: "Bass", short: "Bass",                   tests: "Low end",                 desc: "Depth, punch and clarity of the bass strings." },
+  ballad:     { label: "Ballad", short: "Ballad",                 tests: "Sustain and sweetness",   desc: "A slow old-time ballad. Note bloom, decay and warmth." },
+  keyA:       { label: "Country Strumming", short: "Country",      tests: "Capo 2nd fret",           desc: "Rhythm in A with the capo on the second fret. Projection, headroom and chord separation." },
+  wildflower: { label: "Flatpick Noodling", short: "Noodling",      tests: "Capo 2nd fret",           desc: "Flatpicked lines in the same position, right after the rhythm. Note definition and attack." },
+  bflat:      { label: "Strumming in B-flat", short: "B-flat",    tests: "Capo 3rd fret",           desc: "Strumming in B-flat with the capo on the third fret. Mids and balance." },
+  keyB:       { label: "Ethereal Modern", short: "Ethereal",        tests: "Key of B, capo 4th fret", desc: "A modern, airy piece in B with the capo on the fourth fret. Treble balance and evenness." },
+  fifth:      { label: "Gentle Strumming", short: "Gentle",       tests: "Capo 5th fret",           desc: "Soft strumming with the capo at the fifth fret. High-register clarity and sparkle." },
 };
 const ORDER = Object.keys(SECTIONS).filter(s => CLIPS.some(c => c.section === s));
 const GUITARS = [...new Map(CLIPS.map(c => [c.ep, { ep: c.ep, guitar: c.guitar }])).values()].sort((a, b) => a.ep.localeCompare(b.ep));
@@ -815,15 +819,15 @@ function showResults(s, celebrate = false) { current = s; show("results"); resPl
   $("#res-sub").textContent = `${new Date(s.date).toLocaleString()}${s.comparisons ? ` · ${s.comparisons} comparisons` : ""}${s.rounds ? ` · ${s.rounds} rounds` : ""}`;
   let head, body;
   if (s.mode === "rate") {
-    head = `<th>#</th><th>Guitar</th>${secs.map(x => `<th class="num">${SECTIONS[x].label}</th>`).join("")}${multi ? `<th class="num">Average</th>` : ""}`;
+    head = `<th>#</th><th>Guitar</th>${secs.map(x => `<th class="num" title="${SECTIONS[x].label}">${SECTIONS[x].short}</th>`).join("")}${multi ? `<th class="num">Avg</th>` : ""}`;
     body = s.rows.map(r => `<tr data-ep="${r.ep}"><td class="num">${r.rank}</td><td><span class="gname" data-ep="${r.ep}">${thumb(r.ep)}${r.guitar}</span></td>${secs.map(x => `<td class="num score heat-${r.scores[x] ?? 3}"><button data-edit="${r.ep}|${x}" title="Replay and change">${r.scores[x] ?? "–"}</button></td>`).join("")}${multi ? `<td class="num heat-${Math.max(1, Math.min(5, Math.round(r.avg)))}"><b>${r.avg.toFixed(2)}</b></td>` : ""}</tr>`).join("");
     $("#res-hint").textContent = "Tap a score to replay that clip and change it. Tap a name to hear any of that guitar's clips.";
   } else if (s.mode === "tourney") {
-    head = `<th>#</th><th>Guitar</th><th class="num" title="Bradley-Terry: chance of beating an average guitar in the set">Beats avg.</th><th class="num">W-L-T</th>${multi ? secs.map(x => `<th class="num">${SECTIONS[x].label}</th>`).join("") : ""}`;
+    head = `<th>#</th><th>Guitar</th><th class="num" title="Bradley-Terry: chance of beating an average guitar in the set">Beats avg.</th><th class="num">W-L-T</th>${multi ? secs.map(x => `<th class="num" title="${SECTIONS[x].label}">${SECTIONS[x].short}</th>`).join("") : ""}`;
     body = s.rows.map(r => `<tr data-ep="${r.ep}"><td class="num">${r.rank}</td><td><span class="gname" data-ep="${r.ep}">${thumb(r.ep)}${r.guitar}</span></td><td class="num heat-${r.winp < .3 ? 1 : r.winp < .45 ? 2 : r.winp < .55 ? 3 : r.winp < .7 ? 4 : 5}"><b>${Math.round(100 * r.winp)}%</b></td><td class="num">${r.rec.w}-${r.rec.l}-${r.rec.t}</td>${multi ? secs.map(x => `<td class="num">${r.secrec[x].w}-${r.secrec[x].l}-${r.secrec[x].t}</td>`).join("") : ""}</tr>`).join("");
     $("#res-hint").textContent = "Beats avg. is the fitted Bradley-Terry strength expressed as the chance of winning a matchup against an average guitar in this set. Tap a guitar's name to listen to any of its clips.";
   } else {
-    head = `<th>#</th><th>Guitar</th>${secs.map(x => `<th class="num">${SECTIONS[x].label}</th>`).join("")}${multi ? `<th class="num">Mean rank</th>` : ""}`;
+    head = `<th>#</th><th>Guitar</th>${secs.map(x => `<th class="num" title="${SECTIONS[x].label}">${SECTIONS[x].short}</th>`).join("")}${multi ? `<th class="num">Mean</th>` : ""}`;
     const hb = rk => rk <= 3 ? 5 : rk <= 7 ? 4 : rk <= 11 ? 3 : rk <= 15 ? 2 : 1;
     body = s.rows.map(r => `<tr data-ep="${r.ep}"><td class="num">${r.rank}</td><td><span class="gname" data-ep="${r.ep}">${thumb(r.ep)}${r.guitar}</span></td>${secs.map(x => `<td class="num heat-${hb(r.ranks[x])}">${r.ranks[x]}</td>`).join("")}${multi ? `<td class="num heat-${hb(r.rank)}"><b>${r.meanRank.toFixed(1)}</b></td>` : ""}</tr>`).join("");
     $("#res-hint").textContent = (multi ? "Per-section rank from each sort, averaged. " : "") + "Tap a guitar's name to listen to any of its clips.";
@@ -839,8 +843,9 @@ function showResults(s, celebrate = false) { current = s; show("results"); resPl
     const right = x => s.mode === "rate" && inSession(x) ? `<span class="mini">${[1,2,3,4,5].map(n => `<button data-ep="${ep}" data-sec="${x}" data-n="${n}" class="${r.scores[x] === n ? "on" : ""}">${n}</button>`).join("")}</span>`
       : s.mode === "tourney" && inSession(x) && r.secrec && r.secrec[x] ? `<span class="small muted">${r.secrec[x].w}-${r.secrec[x].l}-${r.secrec[x].t}</span>`
       : s.mode === "sort" && inSession(x) && r.ranks ? `<span class="small muted">rank ${r.ranks[x]}</span>` : `<span class="tiny muted">not in this session</span>`;
-    tr.innerHTML = `<td colspan="${ncols}"><div class="dhead"><span class="dname">${r.guitar}</span><span class="tiny muted">${s.mode === "rate" ? "Play any section. Change a score and the table re-sorts." : "Play any section."}</span><button class="btn ghost small dclose" title="Close">✕ Close</button></div><div class="detail">${ORDER.map(x => `<div class="drow${x === focusSec ? " focus" : ""}"><button class="dplay" data-lp="${ep}|${x}" title="Play">▶</button><div class="dlabel"><b>${SECTIONS[x].label}</b><span>${SECTIONS[x].tests}</span></div><div class="dscore">${right(x)}</div></div>`).join("")}</div></td>`;
+    tr.innerHTML = `<td colspan="${ncols}"><div class="dpanel"><div class="dhead"><span class="dname">${r.guitar}</span><span class="tiny muted">${s.mode === "rate" ? "Play any section. Change a score and the table re-sorts." : "Play any section."}</span><button class="btn ghost small dclose" title="Close">✕ Close</button></div><div class="detail">${ORDER.map(x => `<div class="drow${x === focusSec ? " focus" : ""}"><button class="dplay" data-lp="${ep}|${x}" title="Play">▶</button><div class="dlabel"><b>${SECTIONS[x].label}</b><span>${SECTIONS[x].tests}</span></div><div class="dscore">${right(x)}</div></div>`).join("")}</div></div></td>`;
     row.after(tr);
+    const fitPanel = () => { const sc = $("#res-table").closest(".scroll"); const pad = 20; tr.querySelector(".dpanel").style.width = Math.max(240, sc.clientWidth - pad) + "px"; }; fitPanel(); tr._fit = fitPanel; window.addEventListener("resize", fitPanel);
     tr.querySelector(".dclose").addEventListener("click", () => { resPlayer.stop(); tr.remove(); });
     const resetBtns = () => tr.querySelectorAll(".dplay").forEach(x => { x.classList.remove("on"); x.textContent = "▶"; });
     const play = b => { const [e2, sec] = b.dataset.lp.split("|"); resetBtns(); resPlayer.load(clipOf(e2, sec).clip, 0); resPlayer.play(); b.classList.add("on"); b.textContent = "❚❚"; resPlayer.onend = resetBtns; };
